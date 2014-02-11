@@ -1,7 +1,7 @@
 # TODOs
-Filename | line # | value
-index.js | 45 | better rename
+| Filename | line # | value
+| index.js | 45 | better rename
 
 
 # FIXMEs
-Filename | line # | value
+| Filename | line # | value
