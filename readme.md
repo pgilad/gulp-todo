@@ -25,6 +25,20 @@ gulp.task('default', function() {
 });
 ```
 
+## Options
+
+```js
+{
+    fileName: 'todo.md',
+    newLine: '\n'
+}
+```
+
+Optionally pass a filename to name the output markdown file.
+`fileName`. Default is `todo.md`;
+
+Optionally pass a newline delimiter for the output file. Default is your os's newline.
+
 ## License
 
 MIT ©2014 **Gilad Peleg**
