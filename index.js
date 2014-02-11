@@ -69,16 +69,18 @@ module.exports = function (params) {
 
             var contents = '';
             comments.forEach(function (comment) {
-                output[comment.kind] += comment.file + ' | ' + comment.line + ' | ' + comment.text + newLine;
+                output[comment.kind] += '| ' + comment.file + ' | ' + comment.line + ' | ' + comment.text + newLine;
             });
 
             contents = '# TODOs' + newLine;
-            contents += 'Filename | line # | value' + newLine;
+            contents += '| Filename | line # | value' + newLine;
+            contents += '| --- | --- | ---' + newLine;
             contents += output.TODO + newLine + newLine;
 
             contents += '# FIXMEs' + newLine;
-            contents += 'Filename | line # | value' + newLine;
-            contents += output.FIXME + newLine + newLine;
+            contents += '| Filename | line # | value' + newLine;
+            contents += '| --- | --- | ---' + newLine;
+            contents += output.FIXME;
 
             this.push(new gutil.File({
                 cwd: firstFile.cwd,
