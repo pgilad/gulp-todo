@@ -1,4 +1,4 @@
-# [gulp](https://github.com/wearefractal/gulp)-gulp
+# [gulp](https://github.com/wearefractal/gulp)-todo
 
 > Generate a TODO.md file from your javascript todos and fixmes
 
