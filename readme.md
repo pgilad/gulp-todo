@@ -1,6 +1,10 @@
 # [gulp](https://github.com/wearefractal/gulp)-todo
-
 > Generate a TODO.md file from your javascript todos and fixmes
+
+[![NPM Version](http://img.shields.io/npm/v/gulp-todo.svg)](https://npmjs.org/package/gulp-todo)
+[![NPM](http://img.shields.io/npm/dm/gulp-todo.svg)](https://npmjs.org/package/gulp-todo)
+[![Gittip](http://img.shields.io/gittip/pgilad.svg)](https://www.gittip.com/pgilad/)
+[![Dependencies](http://img.shields.io/gemnasium/pgilad/gulp-todo.svg)](https://gemnasium.com/pgilad/gulp-todo)
 
 Parse all your javascript files through Esprima, and generate a todo.md
 
@@ -16,10 +20,10 @@ npm install --save-dev gulp-todo
 
 ```js
 var gulp = require('gulp');
-var todo = require('./index');
+var todo = require('gulp-todo');
 
 gulp.task('default', function() {
-    gulp.src('*.js')
+    gulp.src('js/**/*.js')
         .pipe(todo())
         .pipe(gulp.dest('./'));
 });
@@ -27,17 +31,21 @@ gulp.task('default', function() {
 
 ## Options
 
+Options can be passed along as an object containing the following fields:
+
+`filename` - contains the output filename. default is: `todo.md`.
+
+`newLine` - How to seperate the lines. defaults to your OS's default line seperator.
+
+
+#### Example Options:
+
 ```js
 {
     fileName: 'todo.md',
     newLine: '\n'
 }
 ```
-
-Optionally pass a filename to name the output markdown file.
-`fileName`. Default is `todo.md`;
-
-Optionally pass a newline delimiter for the output file. Default is your os's newline.
 
 ## License
 
