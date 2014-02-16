@@ -44,6 +44,33 @@ var generateContents = function (comments, newLine) {
 };
 
 /**
+ * mapCommentObject
+ *
+ * @param comment
+ * @return
+ */
+//TODO export a to a lib
+var mapCommentObject = function (comment) {
+    //get splitted comment
+    var _splitted = comment.value.trim().split(rCommentsSplit);
+    //get relative file name
+    var _file = this.path.replace(this.cwd + path.sep, '');
+    //get comment text
+    var _text = _splitted[2].trim();
+    //get comment kind
+    var _kind = _splitted[1].trim().toUpperCase();
+    //get comment line
+    var _line = comment.loc.start.line;
+
+    return {
+        file: _file,
+        text: _text,
+        kind: _kind,
+        line: _line
+    };
+};
+
+/**
  * getCommentsFromAst
  * returns an array of comments generated from this file
  * TODO export to a lib
@@ -55,37 +82,24 @@ var generateContents = function (comments, newLine) {
 var getCommentsFromAst = function (ast, file) {
     return ast.comments.filter(function (comment) {
         return rCommentsValidator.test(comment.value);
-    }).map(function (comment) {
-        //get splitted comment
-        var _splitted = comment.value.trim().split(rCommentsSplit);
-        //get relative file name
-        var _file = file.path.replace(file.cwd + path.sep, '');
-        //get comment text
-        var _text = _splitted[2].trim();
-        //get comment kind
-        var _kind = _splitted[1].trim().toUpperCase();
-        //get comment line
-        var _line = comment.loc.start.line;
-
-        return {
-            file: _file,
-            text: _text,
-            kind: _kind,
-            line: _line
-        };
-    });
+    }).map(mapCommentObject, file);
 };
 
 module.exports = function (params) {
     params = params || {};
+    //target filename
     var fileName = params.fileName || 'todo.md';
+    //first file to capture cwd
     var firstFile;
+    //newline separator
     var newLine = params.newLine || gutil.linefeed;
     var comments = [];
 
     /* main object iteration */
     return through.obj(function (file, enc, cb) {
             if (file.isNull()) {
+                //if file is null
+                this.push(file);
                 return cb();
             }
 
@@ -93,6 +107,7 @@ module.exports = function (params) {
                 this.emit('error', new gutil.PluginError('gulp-todo', 'Streaming not supported'));
                 return cb();
             }
+
             var ast;
 
             try {
@@ -123,13 +138,16 @@ module.exports = function (params) {
 
             //get generated output
             var contents = generateContents(comments, newLine);
-
-            this.push(new gutil.File({
+            //build stream file
+            var mdFile = new gutil.File({
                 cwd: firstFile.cwd,
                 base: firstFile.cwd,
                 path: path.join(firstFile.cwd, fileName),
                 contents: new Buffer(contents)
-            }));
+            });
+
+            //push file
+            this.push(mdFile);
             return cb();
         });
 };
