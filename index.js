@@ -60,7 +60,7 @@ var mapCommentObject = function (comment) {
     //get comment kind
     var _kind = _splitted[1].trim().toUpperCase();
     //get comment line
-    var _line = comment.loc.start.line;
+    var _line = comment.line;
 
     return {
         file: _file,
@@ -73,16 +73,34 @@ var mapCommentObject = function (comment) {
 /**
  * getCommentsFromAst
  * returns an array of comments generated from this file
- * TODO export to a lib
+ * TODO export this to a lib
  *
  * @param ast
  * @param file
  * @return
  */
 var getCommentsFromAst = function (ast, file) {
-    return ast.comments.filter(function (comment) {
-        return rCommentsValidator.test(comment.value);
-    }).map(mapCommentObject, file);
+    var comments = [];
+    ast.comments.forEach(function (comment) {
+        var splittedComment = comment.value.split('\n');
+        var results = splittedComment.filter(function (item) {
+            return rCommentsValidator.test(item);
+        });
+        if (results && results.length) {
+            results = results.map(function (i) {
+                return {
+                    value: i,
+                    line: comment.loc.start.line
+                };
+            });
+            comments = comments.concat(results);
+        }
+    });
+    if (!comments || !comments.length) {
+        return [];
+    }
+
+    return comments.map(mapCommentObject, file);
 };
 
 module.exports = function (params) {

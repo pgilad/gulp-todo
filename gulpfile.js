@@ -3,7 +3,7 @@ var gulp = require('gulp');
 var todo = require('./index');
 
 gulp.task('default', function () {
-    gulp.src('*.js')
+    gulp.src('index.js')
         .pipe(todo())
         .pipe(gulp.dest('./'));
 });
