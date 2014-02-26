@@ -2,7 +2,6 @@
 > Generate a TODO.md file from your javascript todos and fixmes
 
 [![NPM Version](http://img.shields.io/npm/v/gulp-todo.svg)](https://npmjs.org/package/gulp-todo)
-[![NPM](http://img.shields.io/npm/dm/gulp-todo.svg)](https://npmjs.org/package/gulp-todo)
 [![Gittip](http://img.shields.io/gittip/pgilad.svg)](https://www.gittip.com/pgilad/)
 [![Dependencies](http://img.shields.io/gemnasium/pgilad/gulp-todo.svg)](https://gemnasium.com/pgilad/gulp-todo)
 
