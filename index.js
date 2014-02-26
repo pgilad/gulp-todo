@@ -30,14 +30,14 @@ var generateContents = function (comments, newLine) {
 
     var contents;
 
-    contents = '## TODOs' + newLine;
-    contents += '| Filename | line # | value' + newLine;
-    contents += '| -------- | ------ | ------' + newLine;
+    contents = '### TODOs' + newLine;
+    contents += '| Filename | line # | todo' + newLine;
+    contents += '|:--------:|:------:|:------:' + newLine;
     contents += output.TODO + newLine + newLine;
 
-    contents += '## FIXMEs' + newLine;
-    contents += '| Filename | line # | value' + newLine;
-    contents += '| -------- | ------ | ------' + newLine;
+    contents += '### FIXMEs' + newLine;
+    contents += '| Filename | line # | fixme' + newLine;
+    contents += '|:--------:|:------:|:------:' + newLine;
     contents += output.FIXME;
 
     return contents;
