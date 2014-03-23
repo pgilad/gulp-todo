@@ -54,7 +54,8 @@ var mapCommentObject = function (comment) {
     //get splitted comment
     var _splitted = comment.value.trim().split(rCommentsSplit);
     //get relative file name
-    var _file = this.path.replace(this.cwd + path.sep, '');
+    var _path = this.path || 'unknown file';
+    var _file = _path.replace(this.cwd + path.sep, '');
     //get comment text
     var _text = _splitted[2].trim();
     //get comment kind
@@ -81,6 +82,12 @@ var mapCommentObject = function (comment) {
  */
 var getCommentsFromAst = function (ast, file) {
     var comments = [];
+
+    //fail safe return
+    if (!ast || !ast.comments || !ast.comments.length) {
+        return comments;
+    }
+
     ast.comments.forEach(function (comment) {
         var splittedComment = comment.value.split('\n');
         var results = splittedComment.filter(function (item) {
