@@ -33,18 +33,23 @@ gulp.task('default', function() {
 
 Options can be passed along as an object containing the following fields:
 
-`filename` - contains the output filename. default is: `todo.md`.
+#### filename
 
-`newLine` - How to seperate the lines. defaults to your OS's default line seperator.
+`{String}` - specify the output filename. defaults to `todo.md`.
 
+#### newLine
 
-#### Example Options:
+`{String}` - how to seperate lines in the output file. Defaults to your OS's default line separator (usually `\n`)
+
+### Example Options using defaults:
 
 ```js
-{
+//...
+.pipe(todo({
     fileName: 'todo.md',
     newLine: '\n'
-}
+}))
+//...
 ```
 
 ## License
