@@ -38,7 +38,8 @@
     "esprima": "~1.0.4"
   },
   "devDependencies": {
-    "mocha": "*",
-    "gulp": "~3.5.2"
+    "esprima": "^1.1.1",
+    "gulp": "^3.6.0",
+    "mocha": "*"
   }
 }
