@@ -35,15 +35,15 @@ Options can be passed along as an object containing the following fields:
 
 #### filename
 
-`{String}` - specify the output filename. defaults to `todo.md`.
+`{String}` - specify the output filename. Defaults to `todo.md`.
 
 #### newLine
 
-`{String}` - how to seperate lines in the output file. Defaults to your OS's default line separator (usually `\n`)
+`{String}` - how to separate lines in the output file. Defaults to your OS's default line separator (usually `\n`)
 
-#### logToConsole
+#### verbose
 
-`{Boolean}` - also log the output to the console. defaults to `true`.
+`{Boolean}` - output comments to console as well. Defaults to `false`.
 
 ### Example Options using defaults:
 

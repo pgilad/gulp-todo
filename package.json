@@ -1,44 +1,45 @@
 {
-  "name": "gulp-todo",
-  "version": "0.1.8",
-  "description": "Generate a TODO.md file from your javascript todos and fixmes",
-  "license": "MIT",
-  "repository": "pgilad/gulp-todo",
-  "author": {
-    "name": "Gilad Peleg",
-    "email": "giladp007@gmail.com"
-  },
-  "engines": {
-    "node": ">=0.10.0"
-  },
-  "scripts": {
-    "test": "mocha"
-  },
-  "files": [
-    "index.js"
-  ],
-  "keywords": [
-    "gulpplugin",
-    "gulp",
-    "js",
-    "javascript",
-    "comments",
-    "todo",
-    "list",
-    "esprima",
-    "parse",
-    "esprima",
-    "ast",
-    "source",
-    "code"
-  ],
-  "dependencies": {
-    "esprima": "^1.1.1",
-    "gulp-util": "~2.2.12",
-    "through2": "~0.4.0"
-  },
-  "devDependencies": {
-    "gulp": "^3.6.0",
-    "mocha": "*"
-  }
+    "name": "gulp-todo",
+    "version": "0.1.8",
+    "description": "Generate a TODO.md file from your javascript todos and fixmes",
+    "license": "MIT",
+    "repository": "pgilad/gulp-todo",
+    "author": {
+        "name": "Gilad Peleg",
+        "email": "giladp007@gmail.com"
+    },
+    "engines": {
+        "node": ">=0.10.0"
+    },
+    "scripts": {
+        "test": "mocha",
+        "watchTest": "mocha --watch"
+    },
+    "files": [
+        "index.js"
+    ],
+    "keywords": [
+        "gulpplugin",
+        "gulp",
+        "js",
+        "javascript",
+        "comments",
+        "todo",
+        "list",
+        "esprima",
+        "parse",
+        "esprima",
+        "ast",
+        "source",
+        "code"
+    ],
+    "dependencies": {
+        "esprima": "^1.1.1",
+        "gulp-util": "~2.2.12",
+        "through2": "~0.4.0"
+    },
+    "devDependencies": {
+        "gulp": "^3.6.0",
+        "mocha": "*"
+    }
 }
