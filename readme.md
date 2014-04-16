@@ -41,13 +41,18 @@ Options can be passed along as an object containing the following fields:
 
 `{String}` - how to seperate lines in the output file. Defaults to your OS's default line separator (usually `\n`)
 
+#### logToConsole
+
+`{Boolean}` - also log the output to the console. defaults to `true`.
+
 ### Example Options using defaults:
 
 ```js
 //...
 .pipe(todo({
     fileName: 'todo.md',
-    newLine: '\n'
+    newLine: '\n',
+    logToConsole: true
 }))
 //...
 ```

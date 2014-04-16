@@ -1,4 +1,3 @@
-'use strict';
 var gutil = require('gulp-util');
 var through = require('through2');
 var esprima = require('esprima');
@@ -19,6 +18,7 @@ var rCommentsSplit = /(TODO|FIXME):?/i;
  * @return
  */
 var generateContents = function (comments, newLine) {
+    'use strict';
     var output = {
         TODO: '',
         FIXME: ''
@@ -51,6 +51,7 @@ var generateContents = function (comments, newLine) {
  */
 //TODO export a to a lib
 var mapCommentObject = function (comment) {
+    'use strict';
     //get splitted comment
     var _splitted = comment.value.trim().split(rCommentsSplit);
     //get relative file name
@@ -81,6 +82,7 @@ var mapCommentObject = function (comment) {
  * @return
  */
 var getCommentsFromAst = function (ast, file) {
+    'use strict';
     var comments = [];
 
     //fail safe return
@@ -110,7 +112,17 @@ var getCommentsFromAst = function (ast, file) {
     return comments.map(mapCommentObject, file);
 };
 
+var logCommentsToConsole = function (comments) {
+    (Array.isArray(comments) ? comments : []).forEach(function (comment, i) {
+        var isTodo = /todo/i.test(comment.kind);
+        console.log((i == 0 ? '\n' : '') + '\t \033[' + (isTodo ? '36m' : '95m') + (isTodo ? ' ' : '') + comment.kind + ' \033[0m ' + comment.text);
+        console.log('\t        ' + '\033[90mat ' + comment.file + ':' + comment.line + '\033[0m');
+        console.log('');
+    });
+};
+
 module.exports = function (params) {
+    'use strict';
     params = params || {};
     //target filename
     var fileName = params.fileName || 'todo.md';
@@ -119,6 +131,7 @@ module.exports = function (params) {
     //newline separator
     var newLine = params.newLine || gutil.linefeed;
     var comments = [];
+    var logToConsole = params.logToConsole === false ? false : true;
 
     /* main object iteration */
     return through.obj(function (file, enc, cb) {
@@ -173,6 +186,10 @@ module.exports = function (params) {
 
             //push file
             this.push(mdFile);
+
+            //log to console
+            if (logToConsole) logCommentsToConsole(comments);
+
             return cb();
         });
 };
