@@ -4,7 +4,7 @@
 [![NPM Version](http://img.shields.io/npm/v/gulp-todo.svg?style=flat)](https://npmjs.org/package/gulp-todo)
 [![NPM Downloads](http://img.shields.io/npm/dm/gulp-todo.svg?style=flat)](https://npmjs.org/package/gulp-todo)
 [![Dependencies](http://img.shields.io/gemnasium/pgilad/gulp-todo.svg?style=flat)](https://gemnasium.com/pgilad/gulp-todo)
-[![Build Status](https://travis-ci.org/pgilad/gulp-todo.svg?style=flat)](https://travis-ci.org/pgilad/gulp-todo)
+[![Build Status](http://img.shields.io/travis/pgilad/gulp-todo.svg?style=flat)](https://travis-ci.org/pgilad/gulp-todo)
 
 Parse all your javascript files through Esprima, and generate a todo.md
 
