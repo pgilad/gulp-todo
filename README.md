@@ -1,10 +1,10 @@
 # [gulp](https://github.com/wearefractal/gulp)-todo
 > Generate a TODO.md file from your javascript todos and fixmes
 
-[![NPM Version](http://img.shields.io/npm/v/gulp-todo.svg)](https://npmjs.org/package/gulp-todo)
-[![NPM Downloads](http://img.shields.io/npm/dm/gulp-todo.svg)](https://npmjs.org/package/gulp-todo)
-[![Dependencies](http://img.shields.io/gemnasium/pgilad/gulp-todo.svg)](https://gemnasium.com/pgilad/gulp-todo)
-[![Build Status](https://travis-ci.org/pgilad/gulp-todo.svg?branch=master)](https://travis-ci.org/pgilad/gulp-todo)
+[![NPM Version](http://img.shields.io/npm/v/gulp-todo.svg?style=flat)](https://npmjs.org/package/gulp-todo)
+[![NPM Downloads](http://img.shields.io/npm/dm/gulp-todo.svg?style=flat)](https://npmjs.org/package/gulp-todo)
+[![Dependencies](http://img.shields.io/gemnasium/pgilad/gulp-todo.svg?style=flat)](https://gemnasium.com/pgilad/gulp-todo)
+[![Build Status](https://travis-ci.org/pgilad/gulp-todo.svg?style=flat)](https://travis-ci.org/pgilad/gulp-todo)
 
 Parse all your javascript files through Esprima, and generate a todo.md
 
