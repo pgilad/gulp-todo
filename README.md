@@ -52,7 +52,7 @@ Options can be passed along as an object containing the following fields:
 .pipe(todo({
     fileName: 'todo.md',
     newLine: '\n',
-    logToConsole: false
+    verbose: false
 }))
 //...
 ```
