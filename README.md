@@ -33,7 +33,7 @@ gulp.task('default', function() {
 
 Options can be passed along as an object containing the following fields:
 
-#### filename
+#### fileName
 
 `{String}` - specify the output filename. Defaults to `todo.md`.
 
