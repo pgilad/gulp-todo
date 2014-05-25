@@ -36,6 +36,7 @@ Options can be passed along as an object containing the following fields:
 ### fileName
 
 Type: `String`
+
 Default: `todo.md`
 
 Specify the output filename.
@@ -43,6 +44,7 @@ Specify the output filename.
 ### newLine
 
 Type: `String`
+
 Default: `\n`
 
 How to separate lines in the output file. Defaults to your OS's default line separator.
@@ -50,6 +52,7 @@ How to separate lines in the output file. Defaults to your OS's default line sep
 ### verbose
 
 Type: `Boolean`
+
 Default: `false`
 
 Output comments to console as well.
