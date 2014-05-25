@@ -12,8 +12,8 @@ Parse all your javascript files through Esprima, and generate a todo.md
 
 Install with [npm](https://npmjs.org/package/gulp-todo)
 
-```
-npm install --save-dev gulp-todo
+```bash
+$ npm install --save-dev gulp-todo
 ```
 
 ## Example
@@ -33,17 +33,26 @@ gulp.task('default', function() {
 
 Options can be passed along as an object containing the following fields:
 
-#### fileName
+### fileName
 
-`{String}` - specify the output filename. Defaults to `todo.md`.
+Type: `String`
+Default: `todo.md`
 
-#### newLine
+Specify the output filename.
 
-`{String}` - how to separate lines in the output file. Defaults to your OS's default line separator (usually `\n`)
+### newLine
 
-#### verbose
+Type: `String`
+Default: `\n`
 
-`{Boolean}` - output comments to console as well. Defaults to `false`.
+How to separate lines in the output file. Defaults to your OS's default line separator.
+
+### verbose
+
+Type: `Boolean`
+Default: `false`
+
+Output comments to console as well.
 
 ### Example Options using defaults:
 
