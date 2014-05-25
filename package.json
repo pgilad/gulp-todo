@@ -34,12 +34,12 @@
     "code"
   ],
   "dependencies": {
-    "esprima": "^1.1.1",
+    "esprima": "^1.2.2",
     "gulp-util": "~2.2.12",
-    "through2": "~0.4.0"
+    "through2": "^0.4.2"
   },
   "devDependencies": {
-    "gulp": "^3.6.0",
-    "mocha": "*"
+    "gulp": "^3.6.2",
+    "mocha": "^1.19.0"
   }
 }
