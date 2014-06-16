@@ -36,7 +36,7 @@
   "dependencies": {
     "esprima": "^1.2.2",
     "gulp-util": "~2.2.12",
-    "through2": "^0.4.2"
+    "through2": "^0.5.1"
   },
   "devDependencies": {
     "gulp": "^3.6.2",
