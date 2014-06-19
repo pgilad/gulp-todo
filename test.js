@@ -90,3 +90,25 @@ it('should work with verbose output', function (cb) {
 
     stream.end();
 });
+
+it('should use custom templates when available', function (cb) {
+    var stream = todo({
+        header: '### //${kind}',
+        comment: '* ${text} (at ${file}:${line})',
+    });
+
+    stream.on('data', function (file) {
+        var contents = file._contents.toString();
+        assert(/### \/\/TODO/.test(contents));
+        assert(/\* export a to a lib \(at unknown file:[0-9]+\)/.test(contents));
+    });
+    stream.on('end', cb);
+
+    var testFile = fs.readFileSync('./index.js');
+
+    stream.write(new gutil.File({
+        contents: new Buffer(testFile.toString())
+    }));
+
+    stream.end();
+});

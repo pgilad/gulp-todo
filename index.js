@@ -8,8 +8,15 @@ var path = require('path');
 var rCommentsValidator = /^(\W)*(TODO|FIXME)+(?:\s)*?(?:\S)+/i;
 //split todo/fixme comments
 var rCommentsSplit = /(TODO|FIXME):?/i;
+var rVar = '\\$\\{\\s*_\\s*\\}';
+var rAlphaVar = new RegExp(rVar.replace('_', '([a-z]+)'), 'gi');
+var rNumberVar = new RegExp(rVar.replace('_', '([a-z]+)'), 'gi');
+var rKindVar = new RegExp(rVar.replace('_', 'kind'), 'gi');
 
 var isVerbose = false;
+
+var defaultHeaderTemplate = '### ${kind}s\n| Filename | line # | todo\n';
+var defaultCommentTemplate = '${file} | ${line} | ${text}';
 
 /**
  * logCommentsToConsole
@@ -30,33 +37,38 @@ var logCommentsToConsole = function (comments) {
 /**
  * generateContents
  * generates the markdown output
- * TODO export to a lib
+ * TODO export to a lib ~author
  *
  * @param comments
  * @param newLine
  * @return
  */
-var generateContents = function (comments, newLine) {
-    var output = {
-        TODO: '',
-        FIXME: ''
-    };
+var generateContents = function (comments, config) {
+    var output, kind, header;
+
+    output = {};
 
     comments.forEach(function (comment) {
-        output[comment.kind] += '| ' + comment.file + ' | ' + comment.line + ' | ' + comment.text + newLine;
+        var commentOut;
+
+        commentOut = config.commentTemplate.replace(rAlphaVar, function(match, key) {
+            return comment[key] || match;
+        });
+
+        if (!output[comment.kind]) {
+            output[comment.kind] = [];
+        }
+
+        output[comment.kind].push(commentOut);
     });
 
-    var contents;
+    var contents = '';
 
-    contents = '### TODOs' + newLine;
-    contents += '| Filename | line # | todo' + newLine;
-    contents += '|:--------:|:------:|:------:' + newLine;
-    contents += output.TODO + newLine + newLine;
+    for(kind in output) {
+        header = config.headerTemplate.replace(rKindVar, kind);
 
-    contents += '### FIXMEs' + newLine;
-    contents += '| Filename | line # | fixme' + newLine;
-    contents += '|:--------:|:------:|:------:' + newLine;
-    contents += output.FIXME;
+        contents += header + config.newLine + output[kind].join(config.newLine);
+    }
 
     return contents;
 };
@@ -134,17 +146,18 @@ var getCommentsFromAst = function (ast, file) {
     return returnObj;
 };
 
-
 module.exports = function (params) {
     params = params || {};
     //target filename
     var fileName = params.fileName || 'todo.md';
     //first file to capture cwd
     var firstFile;
-    //newline separator
-    var newLine = params.newLine || gutil.linefeed;
     var comments = [];
-
+    var config = {
+        newLine: params.newLine || gutil.linefeed,
+        headerTemplate: params.header || defaultHeaderTemplate,
+        commentTemplate: params.comment || defaultCommentTemplate
+    };
     //set verbose mode - log comments
     isVerbose = params.verbose || false;
 
@@ -190,7 +203,7 @@ module.exports = function (params) {
             }
 
             //get generated output
-            var contents = generateContents(comments, newLine);
+            var contents = generateContents(comments, config);
             //build stream file
             var mdFile = new gutil.File({
                 cwd: firstFile.cwd,

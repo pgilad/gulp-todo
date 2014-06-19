@@ -69,6 +69,19 @@ Output comments to console as well.
 //...
 ```
 
+### Advanced styling
+
+gulp-todo gives you fine-grained control over its output if desired.
+
+```js
+//...
+.pipe(todo({
+    header: '### //${kind}',
+    comment: '* ${text} *(at: ${file}**:${line}**)*',
+}))
+//...
+```
+
 ## License
 
 MIT ©2014 **Gilad Peleg**
