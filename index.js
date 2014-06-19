@@ -1,4 +1,5 @@
 'use strict';
+
 var gutil = require('gulp-util');
 var through = require('through2');
 var esprima = require('esprima');
@@ -10,7 +11,6 @@ var rCommentsValidator = /^(\W)*(TODO|FIXME)+(?:\s)*?(?:\S)+/i;
 var rCommentsSplit = /(TODO|FIXME):?/i;
 var rVar = '\\$\\{\\s*_\\s*\\}';
 var rAlphaVar = new RegExp(rVar.replace('_', '([a-z]+)'), 'gi');
-var rNumberVar = new RegExp(rVar.replace('_', '([a-z]+)'), 'gi');
 var rKindVar = new RegExp(rVar.replace('_', 'kind'), 'gi');
 
 var isVerbose = false;
@@ -53,7 +53,7 @@ var generateContents = function (comments, config) {
 
         commentOut = config.commentTemplate.replace(rAlphaVar, function(match, key) {
             return comment[key] || match;
-        });
+        }).replace('\\n', '\n');
 
         if (!output[comment.kind]) {
             output[comment.kind] = [];
