@@ -75,7 +75,7 @@ Control the output of a header for each comment kind (*i.e todo, fixme*).
 
 **Params**: `transformHeader(kind)`
 
-**kind** will be be passed as the comment kind (todo/fixme).
+**kind**: will be be passed as the comment kind (todo/fixme).
 
 You are expected to return either an `Array of strings` or just a `string`. If you return an array - each item will be separated by a newline in the output.
 
@@ -102,7 +102,7 @@ Control the output for each comment.
 
 **text**: comment text
 
-**kind** will be be passed as the comment kind (todo/fixme).
+**kind**: will be be passed as the comment kind (todo/fixme).
 
 You are expected to return either an `Array of strings` or just a `string`. If you return an array - each item will be separated by a newline in the output.
 
