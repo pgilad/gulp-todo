@@ -1,7 +1,7 @@
 {
   "name": "gulp-todo",
   "version": "0.3.1",
-  "description": "Generate a TODO.md file from your javascript todos and fixmes",
+  "description": "Generate a TODO.md file from comments of files in stream",
   "license": "MIT",
   "repository": "pgilad/gulp-todo",
   "author": {
