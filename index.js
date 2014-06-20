@@ -3,13 +3,12 @@ var gutil = require('gulp-util');
 var through = require('through2');
 var esprima = require('esprima');
 var path = require('path');
+var defaults = require('lodash.defaults');
 
 //test for comments that have todo/fixme + text
 var rCommentsValidator = /^(\W)*(TODO|FIXME)+(?:\s)*?(?:\S)+/i;
 //split todo/fixme comments
 var rCommentsSplit = /(TODO|FIXME):?/i;
-
-var isVerbose = false;
 
 /**
  * logCommentsToConsole
@@ -20,44 +19,61 @@ var isVerbose = false;
 var logCommentsToConsole = function (comments) {
     comments.forEach(function (comment) {
         var isTodo = /todo/i.test(comment.kind);
-        //log comment type and text
-        gutil.log(isTodo ? gutil.colors.cyan(comment.kind) : gutil.colors.magenta(comment.kind), comment.text);
-        //log comment file and line
-        gutil.log(gutil.colors.gray(comment.file + ':' + comment.line));
+        var commentType = isTodo ? gutil.colors.cyan(comment.kind) : gutil.colors.magenta(comment.kind);
+        var commentLocation = '@' + gutil.colors.gray(comment.file + ':' + comment.line);
+        gutil.log(commentType, comment.text, commentLocation);
     });
 };
 
 /**
  * generateContents
  * generates the markdown output
- * TODO export to a lib
+ * TODO export to a lib ~author
  *
  * @param comments
  * @param newLine
  * @return
  */
-var generateContents = function (comments, newLine) {
-    var output = {
-        TODO: '',
-        FIXME: ''
-    };
+var generateContents = function (comments, config) {
+    var newLine = config.newLine;
+    var transformComment = config.transformComment;
+    var transformHeader = config.transformHeader;
+    var output = {};
 
     comments.forEach(function (comment) {
-        output[comment.kind] += '| ' + comment.file + ' | ' + comment.line + ' | ' + comment.text + newLine;
+        var kind = comment.kind;
+        //initialize kind
+        output[kind] = output[kind] || [];
+        //transformed comment as an array item
+        var transformedComment = transformComment(comment.file, comment.line, comment.text, kind);
+        //enforce array type
+        if (!Array.isArray(transformedComment)) {
+            transformedComment = [transformComment];
+        }
+        //append to kind array
+        output[kind] = output[kind].concat(transformedComment);
     });
 
-    var contents;
+    var header;
+    var contents = '';
+    var kind;
 
-    contents = '### TODOs' + newLine;
-    contents += '| Filename | line # | todo' + newLine;
-    contents += '|:--------:|:------:|:------:' + newLine;
-    contents += output.TODO + newLine + newLine;
-
-    contents += '### FIXMEs' + newLine;
-    contents += '| Filename | line # | fixme' + newLine;
-    contents += '|:--------:|:------:|:------:' + newLine;
-    contents += output.FIXME;
-
+    //prepend headers
+    for (kind in output) {
+        if (output.hasOwnProperty(kind)) {
+            //apply transformation header
+            header = transformHeader(kind);
+            if (!Array.isArray(header)) {
+                header = [header];
+            }
+            output[kind] = header.concat(output[kind]);
+            //keep a margin of blank line from above kind
+            if (contents.length) {
+                contents += newLine + newLine;
+            }
+            contents += output[kind].join(newLine);
+        }
+    }
     return contents;
 };
 
@@ -96,11 +112,11 @@ var mapCommentObject = function (comment) {
  *
  * @param ast
  * @param file
+ * @param config
  * @return
  */
-var getCommentsFromAst = function (ast, file) {
+var getCommentsFromAst = function (ast, file, isVerbose) {
     var comments = [];
-
     //fail safe return
     if (!ast || !ast.comments || !ast.comments.length) {
         return comments;
@@ -108,18 +124,17 @@ var getCommentsFromAst = function (ast, file) {
 
     ast.comments.forEach(function (comment) {
         var splittedComment = comment.value.split('\n');
-        var results = splittedComment.filter(function (item) {
-            return rCommentsValidator.test(item);
-        });
-        if (results && results.length) {
-            results = results.map(function (i) {
-                return {
-                    value: i,
+        var results = splittedComment.reduce(function (arr, item) {
+            //if item passes as a todo/fixme comment
+            if (rCommentsValidator.test(item)) {
+                arr.push({
+                    value: item,
                     line: comment.loc.start.line
-                };
-            });
-            comments = comments.concat(results);
-        }
+                });
+            }
+            return arr;
+        }, []);
+        comments = comments.concat(results);
     });
 
     if (!comments || !comments.length) {
@@ -134,35 +149,49 @@ var getCommentsFromAst = function (ast, file) {
     return returnObj;
 };
 
-
 module.exports = function (params) {
     params = params || {};
-    //target filename
-    var fileName = params.fileName || 'todo.md';
-    //first file to capture cwd
-    var firstFile;
-    //newline separator
-    var newLine = params.newLine || gutil.linefeed;
-    var comments = [];
+    //assign default params
+    var config = defaults(params, {
+        fileName: 'todo.md',
+        verbose: false,
+        newLine: gutil.linefeed,
+        transformComment: function (file, line, text) {
+            return ['| ' + file + ' | ' + line + ' | ' + text];
+        },
+        transformHeader: function (kind) {
+            return ['### ' + kind + 's',
+                '| Filename | line # | todo',
+                '|:--------:|:------:|:------:'];
+        }
+    });
 
-    //set verbose mode - log comments
-    isVerbose = params.verbose || false;
+    //verify types
+    if (typeof config.transformHeader !== 'function') {
+        throw new gutil.PluginError('gulp-todo', 'transformHeader must be a function');
+    }
+    if (typeof config.transformComment !== 'function') {
+        throw new gutil.PluginError('gulp-todo', 'transformComment must be a function');
+    }
+
+    var firstFile;
+    var comments = [];
 
     /* main object iteration */
     return through.obj(function (file, enc, cb) {
+            //let null files pass through
             if (file.isNull()) {
-                //if file is null
                 this.push(file);
                 return cb();
             }
-
+            //can't handle streams for now
             if (file.isStream()) {
                 this.emit('error', new gutil.PluginError('gulp-todo', 'Streaming not supported'));
                 return cb();
             }
 
+            /* TODO: handle different filetypes */
             var ast;
-
             try {
                 ast = esprima.parse(file.contents.toString('utf8'), {
                     tolerant: true,
@@ -179,29 +208,26 @@ module.exports = function (params) {
                 firstFile = file;
             }
 
-            //todo better rename
-            comments = comments.concat(getCommentsFromAst(ast, file));
-
+            //fixme better rename
+            var fileComments = getCommentsFromAst(ast, file, config.verbose);
+            comments = comments.concat(fileComments);
             return cb();
         },
         function (cb) {
+            //didn't get any files or have no comments
             if (!firstFile || !comments.length) {
                 return cb();
             }
-
-            //get generated output
-            var contents = generateContents(comments, newLine);
             //build stream file
-            var mdFile = new gutil.File({
+            var todoFile = new gutil.File({
                 cwd: firstFile.cwd,
                 base: firstFile.cwd,
-                path: path.join(firstFile.cwd, fileName),
-                contents: new Buffer(contents)
+                path: path.join(firstFile.cwd, config.fileName),
+                contents: new Buffer(generateContents(comments, config))
             });
 
-            //push file
-            this.push(mdFile);
-
+            //push the todo file
+            this.push(todoFile);
             return cb();
         });
 };

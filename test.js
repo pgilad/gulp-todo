@@ -11,15 +11,12 @@ it('should handle a file with no comments', function (cb) {
 
     stream.on('data', function (file) {
         files.push(file);
-    });
-
-    stream.on('end', function () {
+    }).on('end', function () {
         assert.equal(files.length, 0);
         cb();
     });
 
     var testFile = fs.readFileSync('./test.js');
-
     stream.write(new gutil.File({
         contents: new Buffer(testFile.toString())
     }));
@@ -35,12 +32,27 @@ it('should parse a file with comments correctly', function (cb) {
         assert.equal(_filename, 'todo.md');
         assert.ok(/export to a lib/.test(file._contents.toString()));
         assert.ok(/unknown file/.test(file._contents.toString()));
-    });
-
-    stream.on('end', cb);
+    }).on('end', cb);
 
     var testFile = fs.readFileSync('./index.js');
+    stream.write(new gutil.File({
+        contents: new Buffer(testFile.toString())
+    }));
 
+    stream.end();
+});
+
+it('should output to the correct filename', function (cb) {
+    var name = 'magic.md';
+    var stream = todo({
+        fileName: name
+    });
+
+    stream.on('data', function (file) {
+        assert.equal(path.basename(file.path), name);
+    }).on('end', cb);
+
+    var testFile = fs.readFileSync('./index.js');
     stream.write(new gutil.File({
         contents: new Buffer(testFile.toString())
     }));
@@ -68,9 +80,7 @@ it('should work with verbose output', function (cb) {
         assert.equal(_filename, 'todo.md');
         assert.ok(/export to a lib/.test(file._contents.toString()));
         assert.ok(/index\.js/.test(file._contents.toString()));
-    });
-
-    stream.on('end', function () {
+    }).on('end', function () {
         //restore write
         process.stdout.write = write;
         output = output.join('\n');
@@ -86,6 +96,48 @@ it('should work with verbose output', function (cb) {
     stream.write(new gutil.File({
         contents: new Buffer(testFile.toString()),
         path: path.resolve('./index.js')
+    }));
+
+    stream.end();
+});
+
+it('should use custom transormation for header', function (cb) {
+    var stream = todo({
+        transformHeader: function (kind) {
+            return ['### //' + kind];
+        }
+    });
+
+    stream.on('data', function (file) {
+        var contents = file._contents.toString();
+        assert(/### \/\/TODO/.test(contents));
+    }).on('end', cb);
+
+    var testFile = fs.readFileSync('./index.js');
+
+    stream.write(new gutil.File({
+        contents: new Buffer(testFile.toString())
+    }));
+
+    stream.end();
+});
+
+it('should use custom transormation for comment', function (cb) {
+    var stream = todo({
+        transformComment: function (file, line, text) {
+            return ['* ' + text + ' (at ' + file + ':' + line + ')'];
+        },
+    });
+
+    stream.on('data', function (file) {
+        var contents = file._contents.toString();
+        assert(/\* export a to a lib \(at unknown file:[0-9]+\)/.test(contents));
+    }).on('end', cb);
+
+    var testFile = fs.readFileSync('./index.js');
+
+    stream.write(new gutil.File({
+        contents: new Buffer(testFile.toString())
     }));
 
     stream.end();
