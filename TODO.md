@@ -1,12 +1,12 @@
 ### TODOs
 | Filename | line # | todo
 |:--------:|:------:|:------:
-| index.js | 11 | export to a lib
-| index.js | 52 | export a to a lib
-| index.js | 75 | export this to a lib
-| index.js | 167 | better rename
-
+| index.js | 28 | export to a lib ~author
+| index.js | 86 | export a to a lib
+| index.js | 108 | export this to a lib
+| index.js | 198 | handle different filetypes
 
 ### FIXMEs
-| Filename | line # | fixme
+| Filename | line # | todo
 |:--------:|:------:|:------:
+| index.js | 216 | better rename
