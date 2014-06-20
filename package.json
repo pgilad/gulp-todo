@@ -1,46 +1,47 @@
 {
-  "name": "gulp-todo",
-  "version": "0.3.2",
-  "description": "Generate a TODO.md file from comments of files in stream",
-  "license": "MIT",
-  "repository": "pgilad/gulp-todo",
-  "author": {
-    "name": "Gilad Peleg",
-    "email": "giladp007@gmail.com"
-  },
-  "engines": {
-    "node": ">=0.10.0"
-  },
-  "scripts": {
-    "test": "mocha",
-    "watchTest": "mocha --watch"
-  },
-  "files": [
-    "index.js"
-  ],
-  "keywords": [
-    "gulpplugin",
-    "gulp",
-    "js",
-    "javascript",
-    "comments",
-    "todo",
-    "list",
-    "esprima",
-    "parse",
-    "esprima",
-    "ast",
-    "source",
-    "code"
-  ],
-  "dependencies": {
-    "esprima": "^1.2.2",
-    "gulp-util": "~2.2.12",
-    "lodash.defaults": "^2.4.1",
-    "through2": "^0.5.1"
-  },
-  "devDependencies": {
-    "gulp": "^3.6.2",
-    "mocha": "^1.19.0"
-  }
+    "name": "gulp-todo",
+    "version": "0.3.2",
+    "description": "Generate a TODO.md file from comments of files in stream",
+    "license": "MIT",
+    "repository": "pgilad/gulp-todo",
+    "author": {
+        "name": "Gilad Peleg",
+        "email": "giladp007@gmail.com"
+    },
+    "engines": {
+        "node": ">=0.10.0"
+    },
+    "scripts": {
+        "test": "mocha",
+        "watchTest": "mocha --watch"
+    },
+    "files": [
+        "index.js",
+        "lib"
+    ],
+    "keywords": [
+        "gulpplugin",
+        "gulp",
+        "js",
+        "javascript",
+        "comments",
+        "todo",
+        "list",
+        "esprima",
+        "parse",
+        "esprima",
+        "ast",
+        "source",
+        "code"
+    ],
+    "dependencies": {
+        "esprima": "^1.2.2",
+        "gulp-util": "~2.2.12",
+        "lodash.defaults": "^2.4.1",
+        "through2": "^0.5.1"
+    },
+    "devDependencies": {
+        "gulp": "^3.6.2",
+        "mocha": "^1.19.0"
+    }
 }

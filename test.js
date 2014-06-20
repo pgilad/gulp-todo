@@ -32,7 +32,7 @@ it('should parse a file with comments correctly', function (cb) {
     stream.on('data', function (file) {
         var _filename = path.basename(file.path);
         assert.equal(_filename, 'todo.md');
-        assert.ok(/export to a lib/.test(file._contents.toString()));
+        assert.ok(/figure out if/.test(file._contents.toString()));
         assert.ok(/index.js/.test(file._contents.toString()));
     }).on('end', cb);
 
@@ -84,13 +84,12 @@ it('should work with verbose output', function (cb) {
     stream.on('data', function (file) {
         var _filename = path.basename(file.path);
         assert.equal(_filename, 'todo.md');
-        assert.ok(/export to a lib/.test(file._contents.toString()));
+        assert.ok(/figure out if/.test(file._contents.toString()));
         assert.ok(/index\.js/.test(file._contents.toString()));
     }).on('end', function () {
         //restore write
         process.stdout.write = write;
         output = output.join('\n');
-        assert(/export to a lib/.test(output));
         assert(/TODO/.test(output));
         assert(/index\.js/.test(output));
         cb();
