@@ -94,7 +94,7 @@ function (file, line, text) {
 
 **Params**: `transformComment(file, line, text, kind)`
 
-**file**: filename in comment was in.
+**file**: filename the comment was in.
 
 **line**: line of comment.
 
