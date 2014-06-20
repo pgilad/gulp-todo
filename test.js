@@ -16,8 +16,10 @@ it('should handle a file with no comments', function (cb) {
         cb();
     });
 
-    var testFile = fs.readFileSync('./test.js');
+    var file = './test.js';
+    var testFile = fs.readFileSync(file);
     stream.write(new gutil.File({
+        path: file,
         contents: new Buffer(testFile.toString())
     }));
 
@@ -31,11 +33,13 @@ it('should parse a file with comments correctly', function (cb) {
         var _filename = path.basename(file.path);
         assert.equal(_filename, 'todo.md');
         assert.ok(/export to a lib/.test(file._contents.toString()));
-        assert.ok(/unknown file/.test(file._contents.toString()));
+        assert.ok(/index.js/.test(file._contents.toString()));
     }).on('end', cb);
 
-    var testFile = fs.readFileSync('./index.js');
+    var file = './index.js';
+    var testFile = fs.readFileSync(file);
     stream.write(new gutil.File({
+        path: file,
         contents: new Buffer(testFile.toString())
     }));
 
@@ -52,8 +56,10 @@ it('should output to the correct filename', function (cb) {
         assert.equal(path.basename(file.path), name);
     }).on('end', cb);
 
-    var testFile = fs.readFileSync('./index.js');
+    var file = './index.js';
+    var testFile = fs.readFileSync(file);
     stream.write(new gutil.File({
+        path: file,
         contents: new Buffer(testFile.toString())
     }));
 
@@ -87,15 +93,15 @@ it('should work with verbose output', function (cb) {
         assert(/export to a lib/.test(output));
         assert(/TODO/.test(output));
         assert(/index\.js/.test(output));
-        assert(/better rename/.test(output));
         cb();
     });
 
-    var testFile = fs.readFileSync('./index.js');
+    var file = './index.js';
+    var testFile = fs.readFileSync(file);
 
     stream.write(new gutil.File({
+        path: file,
         contents: new Buffer(testFile.toString()),
-        path: path.resolve('./index.js')
     }));
 
     stream.end();
@@ -113,9 +119,11 @@ it('should use custom transormation for header', function (cb) {
         assert(/### \/\/TODO/.test(contents));
     }).on('end', cb);
 
-    var testFile = fs.readFileSync('./index.js');
+    var file = './index.js';
+    var testFile = fs.readFileSync(file);
 
     stream.write(new gutil.File({
+        path: file,
         contents: new Buffer(testFile.toString())
     }));
 
@@ -131,12 +139,52 @@ it('should use custom transormation for comment', function (cb) {
 
     stream.on('data', function (file) {
         var contents = file._contents.toString();
-        assert(/\* export a to a lib \(at unknown file:[0-9]+\)/.test(contents));
+        assert(/\* export a to a lib \(at index.js:[0-9]+\)/.test(contents));
     }).on('end', cb);
 
-    var testFile = fs.readFileSync('./index.js');
+    var file = './index.js';
+    var testFile = fs.readFileSync(file);
 
     stream.write(new gutil.File({
+        path: file,
+        contents: new Buffer(testFile.toString())
+    }));
+
+    stream.end();
+});
+
+it('should handle a file without a path or extension', function (cb) {
+    var stream = todo();
+
+    stream.on('data', function (file) {
+        var contents = file._contents.toString();
+        assert.ok(/unknown file/.test(contents));
+    }).on('end', cb);
+
+    var file = './index.js';
+    var testFile = fs.readFileSync(file);
+
+    stream.write(new gutil.File({
+        contents: new Buffer(testFile.toString())
+    }));
+
+    stream.end();
+});
+
+it('should throw if got an unsupported file extension', function (cb) {
+    var stream = todo();
+
+    stream.on('error', function (err) {
+        assert(err);
+        assert(/is not supported/.test(err.message));
+        cb();
+    }).on('end', cb);
+
+    var file = './index.js';
+    var testFile = fs.readFileSync(file);
+
+    stream.write(new gutil.File({
+        path: './index.unsupported',
         contents: new Buffer(testFile.toString())
     }));
 

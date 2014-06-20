@@ -16,8 +16,8 @@ var rCommentsSplit = /(TODO|FIXME):?/i;
  *
  * @param {Array} comments - the comments array
  */
-var logCommentsToConsole = function (comments) {
-    comments.forEach(function (comment) {
+var logCommentsToConsole = function(comments) {
+    comments.forEach(function(comment) {
         var isTodo = /todo/i.test(comment.kind);
         var commentType = isTodo ? gutil.colors.cyan(comment.kind) : gutil.colors.magenta(comment.kind);
         var commentLocation = '@' + gutil.colors.gray(comment.file + ':' + comment.line);
@@ -34,13 +34,13 @@ var logCommentsToConsole = function (comments) {
  * @param newLine
  * @return
  */
-var generateContents = function (comments, config) {
+var generateContents = function(comments, config) {
     var newLine = config.newLine;
     var transformComment = config.transformComment;
     var transformHeader = config.transformHeader;
     var output = {};
 
-    comments.forEach(function (comment) {
+    comments.forEach(function(comment) {
         var kind = comment.kind;
         //initialize kind
         output[kind] = output[kind] || [];
@@ -84,12 +84,11 @@ var generateContents = function (comments, config) {
  * @return
  */
 //TODO export a to a lib
-var mapCommentObject = function (comment) {
+var mapCommentObject = function(comment, file) {
     //get splitted comment
     var _splitted = comment.value.trim().split(rCommentsSplit);
     //get relative file name
-    var _path = this.path || 'unknown file';
-    var _file = _path.replace(this.cwd + path.sep, '');
+    var _file = (file.path && file.relative) || file.path || 'unknown file';
     //get comment text
     var _text = _splitted[2].trim();
     //get comment kind
@@ -106,25 +105,35 @@ var mapCommentObject = function (comment) {
 };
 
 /**
- * getCommentsFromAst
+ * parseCommentsJs
  * returns an array of comments generated from this file
  * TODO export this to a lib
  *
- * @param ast
  * @param file
- * @param config
  * @return
  */
-var getCommentsFromAst = function (ast, file, isVerbose) {
+var parseCommentsJs = function(file) {
+    var ast;
+    try {
+        ast = esprima.parse(file.contents.toString('utf8'), {
+            tolerant: true,
+            comment: true,
+            loc: true
+        });
+    } catch (err) {
+        err.message = 'gulp-todo: ' + err.message;
+        this.emit('error', new gutil.PluginError('gulp-todo', err));
+    }
+
     var comments = [];
     //fail safe return
     if (!ast || !ast.comments || !ast.comments.length) {
         return comments;
     }
 
-    ast.comments.forEach(function (comment) {
+    ast.comments.forEach(function(comment) {
         var splittedComment = comment.value.split('\n');
-        var results = splittedComment.reduce(function (arr, item) {
+        var results = splittedComment.reduce(function(arr, item) {
             //if item passes as a todo/fixme comment
             if (rCommentsValidator.test(item)) {
                 arr.push({
@@ -137,29 +146,27 @@ var getCommentsFromAst = function (ast, file, isVerbose) {
         comments = comments.concat(results);
     });
 
-    if (!comments || !comments.length) {
-        return [];
-    }
-
-    var returnObj = comments.map(mapCommentObject, file);
-    //if verbose - log comments
-    if (isVerbose) {
-        logCommentsToConsole(returnObj);
-    }
-    return returnObj;
+    //fixme - perhaps the mappings should be done outside the parser
+    return comments.map(function(comment) {
+        return mapCommentObject(comment, file);
+    });
 };
 
-module.exports = function (params) {
+var parsers = {
+    '.js': parseCommentsJs
+};
+
+module.exports = function(params) {
     params = params || {};
     //assign default params
     var config = defaults(params, {
         fileName: 'todo.md',
         verbose: false,
         newLine: gutil.linefeed,
-        transformComment: function (file, line, text) {
+        transformComment: function(file, line, text) {
             return ['| ' + file + ' | ' + line + ' | ' + text];
         },
-        transformHeader: function (kind) {
+        transformHeader: function(kind) {
             return ['### ' + kind + 's',
                 '| Filename | line # | todo',
                 '|:--------:|:------:|:------:'];
@@ -178,7 +185,7 @@ module.exports = function (params) {
     var comments = [];
 
     /* main object iteration */
-    return through.obj(function (file, enc, cb) {
+    return through.obj(function(file, enc, cb) {
             //let null files pass through
             if (file.isNull()) {
                 this.push(file);
@@ -190,30 +197,30 @@ module.exports = function (params) {
                 return cb();
             }
 
-            /* TODO: handle different filetypes */
-            var ast;
-            try {
-                ast = esprima.parse(file.contents.toString('utf8'), {
-                    tolerant: true,
-                    comment: true,
-                    loc: true
-                });
-            } catch (err) {
-                err.message = 'gulp-todo: ' + err.message;
-                this.emit('error', new gutil.PluginError('gulp-todo', err));
-            }
-
             //assign first file to get relative cwd/path
             if (!firstFile) {
                 firstFile = file;
             }
 
-            //fixme better rename
-            var fileComments = getCommentsFromAst(ast, file, config.verbose);
+            var fileComments;
+            //get extension of file - assume javascript if null
+            var ext = path.extname(file.path) || '.js';
+            if (parsers[ext]) {
+                fileComments = parsers[ext].call(this, file);
+            } else {
+                var msg = 'File extension ' + gutil.colors.red(ext) + ' is not supported';
+                this.emit('error', new gutil.PluginError('gulp-todo', msg));
+                return cb();
+            }
+            //append fileComments object
             comments = comments.concat(fileComments);
+
+            if (config.verbose) {
+                logCommentsToConsole(fileComments);
+            }
             return cb();
         },
-        function (cb) {
+        function(cb) {
             //didn't get any files or have no comments
             if (!firstFile || !comments.length) {
                 return cb();

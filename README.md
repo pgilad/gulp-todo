@@ -1,11 +1,11 @@
 # [gulp](https://github.com/wearefractal/gulp)-todo
-> Generate a TODO.md file from your javascript todos and fixmes
+> Generate a TODO.md file from stream
 
 [![NPM Version](http://img.shields.io/npm/v/gulp-todo.svg?style=flat)](https://npmjs.org/package/gulp-todo)
 [![NPM Downloads](http://img.shields.io/npm/dm/gulp-todo.svg?style=flat)](https://npmjs.org/package/gulp-todo)
 [![Build Status](http://img.shields.io/travis/pgilad/gulp-todo.svg?style=flat)](https://travis-ci.org/pgilad/gulp-todo)
 
-Parse all your javascript files through Esprima, and generate a todo.md
+Parse files from stream, extract todos/fixmes and output a markdown file
 
 ## Install
 
@@ -27,6 +27,12 @@ gulp.task('todo', function() {
         .pipe(gulp.dest('./'));
 });
 ```
+
+## Supported Filetypes
+
+- Javascript (`.js`) - using Esprima
+
+If you pass a file without a path (*i.e just data*) it will be parsed as a javascript file.
 
 ## Options
 
