@@ -79,7 +79,7 @@ function (kind) {
 
 You are expected to return either an `Array of strings` or just a `string`. If you return an array - each item will be separated by a newline in the output.
 
-### transformHeader
+### transformComment
 
 Control the output for each comment.
 
