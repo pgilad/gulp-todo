@@ -1,8 +1,8 @@
 'use strict';
+var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
 var esprima = require('esprima');
-var path = require('path');
 var defaults = require('lodash.defaults');
 
 //test for comments that have todo/fixme + text
@@ -30,8 +30,8 @@ var logCommentsToConsole = function(comments) {
  * generates the markdown output
  * TODO export to a lib ~author
  *
- * @param comments
- * @param newLine
+ * @param {Array} comments
+ * @param {Object} config
  * @return
  */
 var generateContents = function(comments, config) {
@@ -80,10 +80,11 @@ var generateContents = function(comments, config) {
 /**
  * mapCommentObject
  *
- * @param comment
+ * @param {Object} comment
+ * @param {Object} file vinyl file in stream
  * @return
  */
-//TODO export a to a lib
+//TODO better document mapCommentObject to aid modular parser libs
 var mapCommentObject = function(comment, file) {
     //get splitted comment
     var _splitted = comment.value.trim().split(rCommentsSplit);
@@ -107,9 +108,9 @@ var mapCommentObject = function(comment, file) {
 /**
  * parseCommentsJs
  * returns an array of comments generated from this file
- * TODO export this to a lib
+ * TODO extract this function to a separate module
  *
- * @param file
+ * @param {Object} file vinyl file in stream
  * @return
  */
 var parseCommentsJs = function(file) {
@@ -146,12 +147,13 @@ var parseCommentsJs = function(file) {
         comments = comments.concat(results);
     });
 
-    //fixme - perhaps the mappings should be done outside the parser
+    //fixme: perhaps the mappings should be done outside the parser
     return comments.map(function(comment) {
         return mapCommentObject(comment, file);
     });
 };
 
+/* list of supported extensions their parsers */
 var parsers = {
     '.js': parseCommentsJs
 };

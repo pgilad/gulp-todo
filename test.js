@@ -107,7 +107,7 @@ it('should work with verbose output', function (cb) {
     stream.end();
 });
 
-it('should use custom transormation for header', function (cb) {
+it('should use custom transformation for header', function (cb) {
     var stream = todo({
         transformHeader: function (kind) {
             return ['### //' + kind];
@@ -130,7 +130,7 @@ it('should use custom transormation for header', function (cb) {
     stream.end();
 });
 
-it('should use custom transormation for comment', function (cb) {
+it('should use custom transformation for comment', function (cb) {
     var stream = todo({
         transformComment: function (file, line, text) {
             return ['* ' + text + ' (at ' + file + ':' + line + ')'];
@@ -139,7 +139,7 @@ it('should use custom transormation for comment', function (cb) {
 
     stream.on('data', function (file) {
         var contents = file._contents.toString();
-        assert(/\* export a to a lib \(at index.js:[0-9]+\)/.test(contents));
+        assert(/\*\s*(\w+\s*)+\s*\(at index.js:[0-9]+\)/.test(contents));
     }).on('end', cb);
 
     var file = './index.js';

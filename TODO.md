@@ -2,10 +2,10 @@
 | Filename | line # | todo
 |:--------:|:------:|:------:
 | index.js | 28 | export to a lib ~author
-| index.js | 86 | export a to a lib
-| index.js | 107 | export this to a lib
+| index.js | 87 | better document mapCommentObject to aid modular parser libs
+| index.js | 108 | extract this function to a separate module
 
 ### FIXMEs
 | Filename | line # | todo
 |:--------:|:------:|:------:
-| index.js | 149 | - perhaps the mappings should be done outside the parser
+| index.js | 150 | perhaps the mappings should be done outside the parser
