@@ -5,6 +5,8 @@ var through = require('through2');
 var defaults = require('lodash.defaults');
 var helpers = require('./lib/helpers');
 
+var PluginError = gutil.PluginError;
+
 /* list of supported extensions their parsers */
 var parsers = {
     //TODO: extract this to another lib?
@@ -30,10 +32,10 @@ module.exports = function(params) {
 
     //verify types
     if (typeof config.transformHeader !== 'function') {
-        throw new gutil.PluginError('gulp-todo', 'transformHeader must be a function');
+        throw new PluginError('gulp-todo', 'transformHeader must be a function');
     }
     if (typeof config.transformComment !== 'function') {
-        throw new gutil.PluginError('gulp-todo', 'transformComment must be a function');
+        throw new PluginError('gulp-todo', 'transformComment must be a function');
     }
 
     var firstFile;
@@ -48,7 +50,7 @@ module.exports = function(params) {
             }
             //can't handle streams for now
             if (file.isStream()) {
-                this.emit('error', new gutil.PluginError('gulp-todo', 'Streaming not supported'));
+                this.emit('error', new PluginError('gulp-todo', 'Streaming not supported'));
                 return cb();
             }
 
@@ -62,7 +64,7 @@ module.exports = function(params) {
             //check if parser for filetype exists
             if (!parsers[ext]) {
                 var msg = 'File extension ' + gutil.colors.red(ext) + ' is not supported';
-                this.emit('error', new gutil.PluginError('gulp-todo', msg));
+                this.emit('error', new PluginError('gulp-todo', msg));
                 return cb();
             }
 
@@ -82,6 +84,7 @@ module.exports = function(params) {
                     helpers.logCommentsToConsole(fileComments);
                 }
             }
+
             return cb();
         },
         function(cb) {

@@ -12,8 +12,8 @@
         "node": ">=0.10.0"
     },
     "scripts": {
-        "test": "mocha",
-        "watchTest": "mocha --watch"
+        "test": "mocha -R spec tests/*.js",
+        "watchTest": "mocha --watch -R spec tests/*.js"
     },
     "files": [
         "index.js",

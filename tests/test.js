@@ -3,7 +3,7 @@ var assert = require('assert');
 var fs = require('fs');
 var gutil = require('gulp-util');
 var path = require('path');
-var todo = require('./index');
+var todo = require('../index');
 
 it('should handle a file with no comments', function (cb) {
     var stream = todo();
@@ -16,7 +16,7 @@ it('should handle a file with no comments', function (cb) {
         cb();
     });
 
-    var file = './test.js';
+    var file = './tests/test.js';
     var testFile = fs.readFileSync(file);
     stream.write(new gutil.File({
         path: file,
