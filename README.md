@@ -34,29 +34,31 @@ All options are **optional**, and can be passed along in an **object** with the 
 
 ### fileName
 
+Specify the output filename.
+
 **Type**: `String`
 
 **Default**: `todo.md`
 
-Specify the output filename.
-
 ### newLine
+
+How to separate lines in the output file. Defaults to your OS's default line separator.
 
 **Type**: `String`
 
 **Default**: `\n`
 
-How to separate lines in the output file. Defaults to your OS's default line separator.
-
 ### verbose
+
+Output comments to console as well.
 
 **Type**: `Boolean`
 
 **Default**: `false`
 
-Output comments to console as well.
-
 ### transformHeader
+
+Control the output of a header for each comment kind (*i.e todo, fixme*).
 
 **Type**: `Function`
 
@@ -69,17 +71,17 @@ function (kind) {
 }
 ```
 
-**Returns**: `String[]|String`
-
-Control the output of a header for each comment kind (*i.e todo, fixme*).
-
 **Params**: `transformHeader(kind)`
 
 **kind**: will be be passed as the comment kind (todo/fixme).
 
+**Returns**: `String[]|String`
+
 You are expected to return either an `Array of strings` or just a `string`. If you return an array - each item will be separated by a newline in the output.
 
 ### transformHeader
+
+Control the output for each comment.
 
 **Type**: `Function`
 
@@ -90,10 +92,6 @@ function (file, line, text) {
 }
 ```
 
-**Returns**: `String[]|String`
-
-Control the output for each comment.
-
 **Params**: `transformComment(file, line, text, kind)`
 
 **file**: filename in comment was in.
@@ -103,6 +101,8 @@ Control the output for each comment.
 **text**: comment text
 
 **kind**: will be be passed as the comment kind (todo/fixme).
+
+**Returns**: `String[]|String`
 
 You are expected to return either an `Array of strings` or just a `string`. If you return an array - each item will be separated by a newline in the output.
 
