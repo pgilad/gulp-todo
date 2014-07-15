@@ -36,12 +36,12 @@
   ],
   "dependencies": {
     "esprima": "^1.2.2",
-    "gulp-util": "^2.2.19",
+    "gulp-util": "^2.2.20",
     "lodash.defaults": "^2.4.1",
     "through2": "^0.5.1"
   },
   "devDependencies": {
-    "gulp": "^3.8.5",
+    "gulp": "^3.8.6",
     "mocha": "^1.19.0"
   }
 }
