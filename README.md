@@ -65,7 +65,7 @@ Output comments to console as well.
 
 **Default**: `false`
 
-### transformHeader
+### transformHeader(kind)
 
 Control the output of a header for each comment kind (*i.e todo, fixme*).
 
@@ -81,15 +81,13 @@ transformHeader: function (kind) {
 }
 ```
 
-**Params**: `transformHeader(kind)`
-
 **kind**: will be be passed as the comment kind (todo/fixme).
 
 **Returns**: `String[]|String`
 
 You are expected to return either an `Array of strings` or just a `string`. If you return an array - each item will be separated by a newline in the output.
 
-### transformComment
+### transformComment(file, line, text, kind)
 
 Control the output for each comment.
 
@@ -101,8 +99,6 @@ function (file, line, text) {
     return ['| ' + file + ' | ' + line + ' | ' + text];
 }
 ```
-
-**Params**: `transformComment(file, line, text, kind)`
 
 **file**: filename the comment was in.
 
