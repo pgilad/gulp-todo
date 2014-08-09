@@ -189,3 +189,25 @@ it('should throw if got an unsupported file extension', function (cb) {
 
     stream.end();
 });
+
+it('should parse a jade file', function (cb) {
+    var stream = todo();
+
+    stream.on('data', function (file) {
+        var _filename = path.basename(file.path);
+        assert.equal(_filename, 'todo.md');
+        var contents = file._contents.toString();
+        assert.ok(/this is a todo/.test(contents));
+        assert.ok(!/THERE this isnt a todo/.test(contents));
+        assert.ok(/also should be caught/.test(contents));
+    }).on('end', cb);
+
+    var file = './tests/fixtures/comments.jade';
+    var testFile = fs.readFileSync(file);
+    stream.write(new gutil.File({
+        path: file,
+        contents: new Buffer(testFile.toString())
+    }));
+
+    stream.end();
+});

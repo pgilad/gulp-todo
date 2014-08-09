@@ -31,6 +31,7 @@ gulp.task('todo', function() {
 ## Supported Filetypes
 
 - Javascript (`.js`) - using Esprima
+- Jade (`.jade`) - using regex
 
 If you pass a file without a path (*i.e just data*) it will be parsed as a javascript file.
 
@@ -72,10 +73,11 @@ Control the output of a header for each comment kind (*i.e todo, fixme*).
 
 **Default**:
 ```js
-function (kind) {
+transformHeader: function (kind) {
     return ['### ' + kind + 's',
         '| Filename | line # | todo',
-        '|:--------:|:------:|:------:'];
+        '|:------|:------:|:------'
+    ];
 }
 ```
 
