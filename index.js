@@ -4,37 +4,13 @@ var gutil = require('gulp-util');
 var through = require('through2');
 var defaults = require('lodash.defaults');
 var helpers = require('./lib/helpers');
-
+var parsers = require('./lib/parsers');
+var configDefaults = require('./lib/config');
 var PluginError = gutil.PluginError;
 var pluginName = 'gulp-todo';
 
-/* list of supported extensions their parsers */
-var parsers = {
-    //TODO: extract this to another lib?
-    '.js': function () {
-        return require('./lib/jsParser');
-    },
-    '.jade': function () {
-        return require('./lib/jadeParser');
-    }
-};
-
 module.exports = function (params) {
-    var config = defaults(params || {}, {
-        fileName: 'todo.md',
-        verbose: false,
-        newLine: gutil.linefeed,
-        transformComment: function (file, line, text) {
-            return ['| ' + file + ' | ' + line + ' | ' + text];
-        },
-        transformHeader: function (kind) {
-            return ['### ' + kind + 's',
-                '| Filename | line # | todo',
-                '|:------|:------:|:------'
-            ];
-        }
-    });
-
+    var config = defaults(params || {}, configDefaults);
     //verify types
     if (typeof config.transformHeader !== 'function') {
         throw new PluginError(pluginName, 'transformHeader must be a function');
@@ -53,7 +29,7 @@ module.exports = function (params) {
                 this.push(file);
                 return cb();
             }
-            //can't handle streams for now
+            //don't handle streams for now
             if (file.isStream()) {
                 this.emit('error', new PluginError(pluginName, 'Streaming not supported'));
                 return cb();
@@ -64,7 +40,7 @@ module.exports = function (params) {
                 firstFile = file;
             }
 
-            //get extension of file - assume javascript if null
+            //get extension - assume .js as default
             var ext = path.extname(file.path) || '.js';
             //check if parser for filetype exists
             if (!parsers[ext]) {
@@ -76,28 +52,20 @@ module.exports = function (params) {
             var contents = file.contents.toString('utf8');
             //TODO: figure out if this is the best way to call a parser
             var fileCommentsArr = parsers[ext]().call(this, contents);
-
-            //if we got any comments from file
-            if (fileCommentsArr && fileCommentsArr.length) {
-                //map comments to our working comment object
-                var fileComments = fileCommentsArr.map(function (comment) {
-                    return helpers.mapCommentObject(comment, file);
-                });
-                //append to existing comments
-                comments = comments.concat(fileComments);
-                if (config.verbose) {
-                    helpers.logCommentsToConsole(fileComments);
-                }
+            if (!fileCommentsArr || !fileCommentsArr.length) {
+                return cb();
             }
-
+            var mappedComments = helpers.getMappedComments(fileCommentsArr, file);
+            if (config.verbose) {
+                helpers.logCommentsToConsole(mappedComments);
+            }
+            comments = comments.concat(mappedComments);
             return cb();
         },
         function (cb) {
-            //didn't get any files or have no comments
             if (!firstFile || !comments.length) {
                 return cb();
             }
-            //build stream file
             var todoFile = new gutil.File({
                 cwd: firstFile.cwd,
                 base: firstFile.cwd,
@@ -105,7 +73,6 @@ module.exports = function (params) {
                 contents: new Buffer(helpers.generateContents(comments, config))
             });
 
-            //push the todo file
             this.push(todoFile);
             return cb();
         });

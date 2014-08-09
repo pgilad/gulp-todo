@@ -15,15 +15,25 @@ Install with [npm](https://npmjs.org/package/gulp-todo)
 $ npm install --save-dev gulp-todo
 ```
 
-## Example
+## Usage
 
 ```js
 var gulp = require('gulp');
 var todo = require('gulp-todo');
 
+//parse all your javascript files
 gulp.task('todo', function() {
     gulp.src('js/**/*.js')
         .pipe(todo())
+        .pipe(gulp.dest('./'));
+});
+
+//generate todo from your jade files
+gulp.task('jade-todo', function() {
+    gulp.src('partials/**/*.jade')
+        .pipe(todo({
+                fileName: 'jade-todo.md'
+            }))
         .pipe(gulp.dest('./'));
 });
 ```
@@ -37,9 +47,11 @@ If you pass a file without a path (*i.e just data*) it will be parsed as a javas
 
 #### PRs for additional filetypes is welcomed!!
 
-## Options
+## API
 
-All options are **optional**, and can be passed along in an **object** with the following properties:
+`todo(params)`
+
+`params` is an optional object, that may contain the following properties:
 
 ### fileName
 
@@ -112,21 +124,22 @@ function (file, line, text) {
 
 You are expected to return either an `Array of strings` or just a `string`. If you return an array - each item will be separated by a newline in the output.
 
-### Example options using defaults:
+## Usage using all default options
 
 ```js
 //...
 .pipe(todo{
-	fileName: 'todo.md',
+    fileName: 'todo.md',
     verbose: false,
-    newLine: '\n',
+    newLine: gutil.linefeed,
     transformComment: function (file, line, text) {
-            return ['| ' + file + ' | ' + line + ' | ' + text];
+        return ['| ' + file + ' | ' + line + ' | ' + text];
     },
     transformHeader: function (kind) {
-    return ['### ' + kind + 's',
-        '| Filename | line # | todo',
-        '|:--------:|:------:|:------:'];
+        return ['### ' + kind + 's',
+            '| Filename | line # | todo',
+            '|:------|:------:|:------'
+        ];
     }
 })
 //...
