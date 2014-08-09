@@ -42,6 +42,7 @@ gulp.task('jade-todo', function() {
 
 - Javascript (`.js`) - using Esprima
 - Jade (`.jade`) - using regex
+- Stylus (`.styl`) - using regex. No support for todos/fixmes in block comments.
 
 If you pass a file without a path (*i.e just data*) it will be parsed as a javascript file.
 

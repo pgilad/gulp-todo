@@ -17,6 +17,7 @@
     "strict": true,
     "trailing": true,
     "smarttabs": true,
+    "dojo": true,
     "globals": {
         "it": true
     }
