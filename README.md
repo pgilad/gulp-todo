@@ -85,7 +85,7 @@ Control the output of a header for each comment kind (*i.e todo, fixme*).
 
 **Default**:
 ```js
-transformHeader: function (kind) {
+function (kind) {
     return ['### ' + kind + 's',
         '| Filename | line # | todo',
         '|:------|:------:|:------'
