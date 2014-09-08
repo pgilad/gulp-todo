@@ -24,4 +24,18 @@ describe('gulp-todo parsing', function () {
             comments[1].kind.should.equal('FIXME');
         });
     });
+
+    describe('handlebars', function () {
+        it('parse {{! }} and {{!-- --}} comments', function () {
+            var file = './tests/fixtures/handlebars.hbs';
+            var content = fs.readFileSync(file, 'utf8');
+            var comments = parsers['.hbs']()(content);
+            should.exist(comments);
+            comments.should.have.length(4);
+            comments[0].kind.should.equal('TODO');
+            comments[1].kind.should.equal('FIXME');
+            comments[2].kind.should.equal('TODO');
+            comments[3].kind.should.equal('TODO');
+        });
+    });
 });
