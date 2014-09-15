@@ -44,6 +44,7 @@ gulp.task('jade-todo', function() {
 - Jade (`.jade`) - using regex
 - Stylus (`.styl`) - using regex. No support for todos/fixmes in block comments.
 - Handlebars (`.hbs`) - using regex. Supports `{{! }}` and `{{!-- --}}`
+- Sass (`.sass`, `.scss`) - using regex. Supports `// and /* */ comments.`
 
 If you pass a file without a path (*i.e just data*) it will be parsed as a javascript file.
 
