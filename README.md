@@ -21,11 +21,12 @@ $ npm install --save-dev gulp-todo
 var gulp = require('gulp');
 var todo = require('gulp-todo');
 
-//parse all your javascript files
+//generate a todo.md from your javascript files
 gulp.task('todo', function() {
     gulp.src('js/**/*.js')
         .pipe(todo())
         .pipe(gulp.dest('./'));
+        // -> Will output a TODO.md with your todos
 });
 
 //generate todo from your jade files
@@ -40,15 +41,18 @@ gulp.task('jade-todo', function() {
 
 ## Supported Filetypes
 
-- Javascript (`.js`) - using Esprima
-- Jade (`.jade`) - using regex
-- Stylus (`.styl`) - using regex. No support for todos/fixmes in block comments.
-- Handlebars (`.hbs`) - using regex. Supports `{{! }}` and `{{!-- --}}`
-- Sass (`.sass`, `.scss`) - using regex. Supports `// and /* */ comments.`
+| Filetype     | Extension       | Notes                                           |
+| ------------ | --------------- | ------------------------------------------------|
+| Handlebars   | `.hbs`          | using regex. Supports `{{! }}` and `{{!-- --}}` |
+| Jade         | `.jade`         | Using regex                                     |
+| Javascript   | `.js`           | Using Esprima                                   |
+| Sass         | `.sass` `.scss` | using regex. Supports `// and /* */` comments.  |
+| Stylus       | `.styl`         | using regex. Supports `// and /* */` comments.  |
+| Typescript   | `.ts`           | using regex. Supports `// and /* */` comments.  |
 
-If you pass a file without a path (*i.e just data*) it will be parsed as a javascript file.
+Javascript is the default parser.
 
-#### PRs for additional filetypes is welcomed!!
+**PRs for additional filetypes is welcomed!!**
 
 ## API
 
