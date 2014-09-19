@@ -31,6 +31,7 @@
     "parse"
   ],
   "dependencies": {
+    "get-line-from-pos": "^0.1.1",
     "gulp-util": "^3.0.1",
     "lodash.defaults": "^2.4.1",
     "through2": "^0.6.1"
