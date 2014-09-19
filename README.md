@@ -39,6 +39,48 @@ gulp.task('jade-todo', function() {
 });
 ```
 
+#### Injecting the todo generated file into another template
+
+If you want to inject the generated todo stream into another file (say a `readme.md.template`)
+you can do the following:
+
+- Create `readme.md.template` file that contains the following marker, marking where you want to inject the generated todo file:
+
+```md
+### some previous content
+<%= marker %>
+```
+
+- Use the following code to inject into that markdown, creating a markdown file with the generated todo:
+
+```js
+var fs = require('fs');
+var path = require('path');
+var gulp = require('gulp');
+var todo = require('gulp-todo');
+var template = require('lodash.template');
+var through = require('through2');
+
+gulp.task('default', function () {
+    gulp.src('./js/**/*.js')
+        .pipe(todo())
+        .pipe(through.obj(function (file, enc, cb) {
+            //read and interpolate template
+            var newContents = template(fs.readFileSync('./readme.md.template'), {
+                marker: file.contents.toString()
+            });
+            //change file name
+            file.path = path.join(file.base, 'readme-new.md');
+            //replace old contents
+            file.contents = new Buffer(newContents);
+            //push new file
+            this.push(file);
+            cb();
+        }))
+       .pipe(gulp.dest('./'));
+});
+```
+
 ## Supported Filetypes
 
 | Filetype     | Extension       | Notes                                           |
