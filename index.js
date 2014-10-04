@@ -5,6 +5,7 @@ var through = require('through2');
 var defaults = require('lodash.defaults');
 var helpers = require('./lib/helpers');
 var parsers = require('./lib/parsers');
+var fs = require('fs');
 var configDefaults = require('./lib/defaults');
 var PluginError = gutil.PluginError;
 var pluginName = 'gulp-todo';
@@ -63,13 +64,16 @@ module.exports = function (params) {
             return cb();
         },
         function (cb) {
+            var todoFilePath = path.join(firstFile.base, config.fileName);
+
             if (!firstFile || !comments.length) {
+                fs.unlinkSync(todoFilePath);
                 return cb();
             }
             var todoFile = new gutil.File({
                 cwd: firstFile.cwd,
                 base: firstFile.cwd,
-                path: path.join(firstFile.base, config.fileName),
+                path: todoFilePath,
                 contents: new Buffer(helpers.generateContents(comments, config))
             });
 
