@@ -69,7 +69,7 @@ module.exports = function (params) {
             var newContents = helpers.generateContents(comments, config);
             var todoFile = new gutil.File({
                 cwd: firstFile.cwd,
-                base: firstFile.cwd,
+                base: firstFile.base,
                 path: path.join(firstFile.base, config.fileName),
                 contents: new Buffer(newContents)
             });
