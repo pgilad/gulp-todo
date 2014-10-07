@@ -38,7 +38,7 @@ describe('gulp-todo streaming', function () {
 
         stream.on('data', function (file) {
             var _filename = path.basename(file.path);
-            assert.equal(_filename, 'todo.md');
+            assert.equal(_filename, 'TODO.md');
             assert.ok(/figure out if/.test(file._contents.toString()));
             assert.ok(/index.js/.test(file._contents.toString()));
         }).on('end', cb);
@@ -76,7 +76,7 @@ describe('gulp-todo streaming', function () {
 
         stream.on('data', function (file) {
             var _filename = path.basename(file.path);
-            assert.equal(_filename, 'todo.md');
+            assert.equal(_filename, 'TODO.md');
             assert.ok(/figure out if/.test(file._contents.toString()));
             assert.ok(/index\.js/.test(file._contents.toString()));
         }).on('end', function () {
@@ -164,7 +164,7 @@ describe('gulp-todo streaming', function () {
 
         stream.on('data', function (file) {
             var _filename = path.basename(file.path);
-            assert.equal(_filename, 'todo.md');
+            assert.equal(_filename, 'TODO.md');
             var contents = file._contents.toString();
             assert.ok(/this is a todo/.test(contents));
             assert.ok(!/THERE this isnt a todo/.test(contents));
