@@ -63,14 +63,15 @@ module.exports = function (params) {
             return cb();
         },
         function (cb) {
-            if (!firstFile || !comments.length) {
+            if (!firstFile) {
                 return cb();
             }
+            var newContents = helpers.generateContents(comments, config);
             var todoFile = new gutil.File({
                 cwd: firstFile.cwd,
                 base: firstFile.cwd,
                 path: path.join(firstFile.base, config.fileName),
-                contents: new Buffer(helpers.generateContents(comments, config))
+                contents: new Buffer(newContents)
             });
 
             this.push(todoFile);

@@ -16,14 +16,17 @@ var streamFile = function (filename, stream) {
 };
 
 describe('gulp-todo streaming', function () {
-    it('should handle a file with no comments', function (cb) {
+    it('should outpt empty file when getting file with no comments', function (cb) {
         var stream = todo();
         var files = [];
 
+        var expected = fs.readFileSync('./tests/expected/empty.md', 'utf8').trim();
+
         stream.on('data', function (file) {
+            assert.equal(file.contents.toString(), expected);
             files.push(file);
         }).on('end', function () {
-            assert.equal(files.length, 0);
+            assert.equal(files.length, 1);
             cb();
         });
 
