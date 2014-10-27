@@ -196,4 +196,4 @@ You are expected to return either an `Array of strings` or just a `string`. If y
 
 ## License
 
-MIT ©2014 **Gilad Peleg**
+MIT @[Gilad Peleg](http://giladpeleg.com)

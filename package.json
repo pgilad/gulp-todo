@@ -2,12 +2,18 @@
   "name": "gulp-todo",
   "version": "0.10.1",
   "description": "Generate a TODO.md file from comments of files in stream",
-  "license": "MIT",
   "repository": "pgilad/gulp-todo",
+  "license": "MIT",
   "author": {
     "name": "Gilad Peleg",
-    "email": "giladp007@gmail.com"
+    "email": "giladp007@gmail.com",
+    "url": "http://giladpeleg.com"
   },
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "lib"
+  ],
   "engines": {
     "node": ">=0.10.0"
   },
@@ -15,11 +21,6 @@
     "test": "mocha -R spec tests/*.js",
     "watchTest": "mocha --watch -R spec tests/*.js"
   },
-  "files": [
-    "LICENSE.md",
-    "index.js",
-    "lib"
-  ],
   "keywords": [
     "gulpplugin",
     "gulp",
@@ -32,7 +33,7 @@
     "parse"
   ],
   "dependencies": {
-    "get-line-from-pos": "^0.1.1",
+    "get-line-from-pos": "^1.0.0",
     "gulp-util": "^3.0.1",
     "lodash.defaults": "^2.4.1",
     "through2": "^0.6.3"
