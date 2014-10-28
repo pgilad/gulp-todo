@@ -63,6 +63,17 @@ describe('gulp-todo parsing', function () {
         });
     });
 
+    describe('scss', function () {
+        it('parse // and /* comments', function () {
+            var file = getFixturePath('block.scss');
+            var comments = getComments(file);
+            should.exist(comments);
+            comments.should.have.length(1);
+            comments[0].kind.should.equal('TODO');
+            comments[0].line.should.equal(4);
+        });
+    });
+
     describe('typescript', function () {
         it('parse // and /* comments', function () {
             var file = getFixturePath('typescript.ts');
