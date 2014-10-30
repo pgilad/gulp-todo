@@ -26,13 +26,14 @@ module.exports = function (params) {
     return through.obj(function (file, enc, cb) {
             //let null files pass through
             if (file.isNull()) {
-                this.push(file);
-                return cb();
+                cb(null, file);
+                return;
             }
+
             //don't handle streams for now
             if (file.isStream()) {
-                this.emit('error', new PluginError(pluginName, 'Streaming not supported'));
-                return cb();
+                cb(new PluginError(pluginName, 'Streaming not supported'));
+                return;
             }
 
             //assign first file to get relative cwd/path
@@ -45,26 +46,28 @@ module.exports = function (params) {
             //check if parser for filetype exists
             if (!parsers[ext]) {
                 var msg = 'File: ' + file.path + ' - Extension ' + gutil.colors.red(ext) + ' is not supported';
-                this.emit('error', new PluginError(pluginName, msg));
-                return cb();
+                cb(new PluginError(pluginName, msg));
+                return;
             }
 
             var contents = file.contents.toString('utf8');
             //TODO: figure out if this is the best way to call a parser
             var fileCommentsArr = parsers[ext]().call(this, contents);
             if (!fileCommentsArr || !fileCommentsArr.length) {
-                return cb();
+                cb();
+                return;
             }
             var mappedComments = helpers.getMappedComments(fileCommentsArr, file);
             if (config.verbose) {
                 helpers.logCommentsToConsole(mappedComments);
             }
             comments = comments.concat(mappedComments);
-            return cb();
+            cb();
         },
         function (cb) {
             if (!firstFile) {
-                return cb();
+                cb();
+                return;
             }
             var newContents = helpers.generateContents(comments, config);
             var todoFile = new gutil.File({
@@ -75,6 +78,6 @@ module.exports = function (params) {
             });
 
             this.push(todoFile);
-            return cb();
+            cb();
         });
 };
