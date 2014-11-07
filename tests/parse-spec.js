@@ -1,3 +1,4 @@
+/* global describe,it */
 'use strict';
 var fs = require('fs');
 var should = require('should');
@@ -95,7 +96,7 @@ describe('gulp-todo parsing', function () {
             comments.should.have.length(1);
             comments[0].kind.should.equal('TODO');
             comments[0].line.should.equal(14);
-            comments[0].text.should.equal('Show my TODO please');
+            comments[0].value.should.equal('Show my TODO please');
         });
     });
 });
