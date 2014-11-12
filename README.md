@@ -87,8 +87,8 @@ gulp.task('default', function () {
 | ------------ | --------------- | ------------------------------------------------|
 | Coffeescript | `.coffee`       | using regex. Supports `#` comments.             |
 | Handlebars   | `.hbs`          | using regex. Supports `{{! }}` and `{{!-- --}}` |
-| Jade         | `.jade`         | Using regex.                                    |
-| Javascript   | `.js`           | Using regex. Supports `// and /* */` comments   |
+| Jade         | `.jade`         | using regex.                                    |
+| Javascript   | `.js`           | using regex. Supports `// and /* */` comments   |
 | Sass         | `.sass` `.scss` | using regex. Supports `// and /* */` comments.  |
 | Stylus       | `.styl`         | using regex. Supports `// and /* */` comments.  |
 | Typescript   | `.ts`           | using regex. Supports `// and /* */` comments.  |
