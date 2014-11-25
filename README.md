@@ -1,11 +1,11 @@
 # [gulp](https://github.com/wearefractal/gulp)-todo
-> Generate a TODO.md file from comments of files in stream
+> Generate TODO.md or todo.json file from comments of files in stream
 
 [![NPM Version](http://img.shields.io/npm/v/gulp-todo.svg?style=flat)](https://npmjs.org/package/gulp-todo)
 [![NPM Downloads](http://img.shields.io/npm/dm/gulp-todo.svg?style=flat)](https://npmjs.org/package/gulp-todo)
 [![Build Status](http://img.shields.io/travis/pgilad/gulp-todo.svg?style=flat)](https://travis-ci.org/pgilad/gulp-todo)
 
-Parse files from a stream, extract todos/fixmes from comments and output a markdown file.
+Parse files from a stream, extract todos/fixmes from comments and output a markdown file or a json file.
 
 ## Install
 
@@ -37,6 +37,36 @@ gulp.task('jade-todo', function() {
             }))
         .pipe(gulp.dest('./'));
 });
+```
+
+* Automation: json output: use the `{format: "json"}` parameter.
+
+```js
+var gulp = require('gulp');
+var todo = require('gulp-todo');
+
+//generate a todo.md from your javascript files
+gulp.task('todo', function() {
+    gulp.src('js/**/*.js')
+        .pipe(todo({format: "json"}))
+        .pipe(gulp.dest('./'));
+        // -> Will output a TODO.md with your todos
+});
+```
+
+The result would be as follows:
+
+```
+$ ls -la docs/
+$ cat docs/todos.json
+[
+    {
+        "file": "index.js",
+        "text": "Find a workaround to install https://github.com/badges/shields locally as a module",
+        "kind": "FIXME",
+        "line": 139
+    }
+]
 ```
 
 #### Injecting the todo generated file into another template
