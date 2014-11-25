@@ -106,21 +106,6 @@ describe('gulp-todo streaming', function () {
         streamFile('./index.js', stream);
     });
 
-    it('should use custom transformation for comment', function (cb) {
-        var stream = todo({
-            transformComment: function (file, line, text) {
-                return ['* ' + text + ' (at ' + file + ':' + line + ')'];
-            },
-        });
-
-        stream.on('data', function (file) {
-            var contents = file._contents.toString();
-            assert(/\*\s*(\w+\s*)+\s*\(at index.js:[0-9]+\)/.test(contents));
-        }).on('end', cb);
-
-        streamFile('./index.js', stream);
-    });
-
     it('should handle a file without a path or extension', function (cb) {
         var stream = todo();
 
