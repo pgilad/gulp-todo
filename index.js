@@ -10,6 +10,7 @@ var PluginError = gutil.PluginError;
 var pluginName = 'gulp-todo';
 
 module.exports = function (params) {
+    //var format = params.format;
     var config = defaults(params || {}, configDefaults);
     //verify types
     if (typeof config.transformHeader !== 'function') {
@@ -69,7 +70,12 @@ module.exports = function (params) {
                 cb();
                 return;
             }
-            var newContents = helpers.generateContents(comments, config);
+
+            var isJson = config.format && config.format === "json";
+            // If that is json, just create the json object
+            var newContents = isJson ? JSON.stringify(comments, null, 4) : helpers.generateContents(comments, config);
+            config.fileName = isJson ? "todos.json" : config.fileName;
+
             var todoFile = new gutil.File({
                 cwd: firstFile.cwd,
                 base: firstFile.base,
