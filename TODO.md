@@ -1,4 +1,4 @@
 ### TODOs
-| Filename | line # | todo
+| Filename | line # | TODO
 |:------|:------:|:------
-| index.js | 53 | figure out if this is the best way to call a parser
+| index.js | 43 | figure out if this is the best way to call a parser

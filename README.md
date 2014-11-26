@@ -21,7 +21,7 @@ $ npm install --save-dev gulp-todo
 var gulp = require('gulp');
 var todo = require('gulp-todo');
 
-//generate a todo.md from your javascript files
+// generate a todo.md from your javascript files
 gulp.task('todo', function() {
     gulp.src('js/**/*.js')
         .pipe(todo())
@@ -29,12 +29,37 @@ gulp.task('todo', function() {
         // -> Will output a TODO.md with your todos
 });
 
-//generate todo from your jade files
-gulp.task('jade-todo', function() {
+// generate todo from your jade files
+gulp.task('todo-jade', function() {
     gulp.src('partials/**/*.jade')
         .pipe(todo({
                 fileName: 'jade-todo.md'
             }))
+        .pipe(gulp.dest('./'));
+});
+
+// create a json output of the comments (useful for CI such as jenkins)
+var wrap = require('gulp-wrap');
+
+gulp.task('todo-json', function () {
+    gulp.src('./**/*.js', {
+        base: './'
+    })
+        .pipe(todo({
+            fileName: 'TODO.json',
+            padding: 1,
+            newLine: ',\n',
+            transformHeader: function () {
+                return '';
+            },
+            transformComment: function (file, line, text, kind) {
+                return ['{' + '"file": "' + file.replace(/"/g, '\\"') + '"',
+                    '"text": "' + text.replace(/"/g, '\\"') + '"',
+                    '"kind": "' + kind + '"',
+                    '"line": ' + line + '}'];
+            }
+        }))
+        .pipe(wrap('[\n<%= contents %>\n]'))
         .pipe(gulp.dest('./'));
 });
 ```
@@ -119,6 +144,16 @@ How to separate lines in the output file. Defaults to your OS's default line sep
 
 **Default**: `\n`
 
+### padding
+
+How many `newLine`s should separate between comment type blocks.
+
+**Type**: `Number`
+
+**Default**: 2
+
+**Minimum**: 0
+
 ### verbose
 
 Output comments to console as well.
@@ -135,9 +170,9 @@ Control the output of a header for each comment kind (*i.e todo, fixme*).
 
 **Default**:
 ```js
-function (kind) {
+transformHeader: function (kind) {
     return ['### ' + kind + 's',
-        '| Filename | line # | todo',
+        '| Filename | line # | ' + kind,
         '|:------|:------:|:------'
     ];
 }
@@ -157,9 +192,9 @@ Control the output for each comment.
 
 **Default**:
 ```js
-function (file, line, text) {
+transformComment: function (file, line, text, kind) {
     return ['| ' + file + ' | ' + line + ' | ' + text];
-}
+},
 ```
 
 **file**: filename the comment was in.
@@ -179,15 +214,16 @@ You are expected to return either an `Array of strings` or just a `string`. If y
 ```js
 //...
 .pipe(todo{
-    fileName: 'todo.md',
+    fileName: 'TODO.md',
+    padding: 2,
     verbose: false,
     newLine: gutil.linefeed,
-    transformComment: function (file, line, text) {
+    transformComment: function (file, line, text, kind) {
         return ['| ' + file + ' | ' + line + ' | ' + text];
     },
     transformHeader: function (kind) {
         return ['### ' + kind + 's',
-            '| Filename | line # | todo',
+            '| Filename | line # | ' + kind,
             '|:------|:------:|:------'
         ];
     }

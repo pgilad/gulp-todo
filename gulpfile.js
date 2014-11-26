@@ -9,6 +9,7 @@ gulp.task('json', function () {
     })
         .pipe(todo({
             fileName: 'TODO.json',
+            padding: 1,
             newLine: ',\n',
             transformHeader: function () {
                 return '';
