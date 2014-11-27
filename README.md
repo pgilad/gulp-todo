@@ -154,7 +154,7 @@ How to separate lines in the output file. Defaults to your OS's default line sep
 
 **Type**: `String`
 
-**Default**: `\n`
+**Default**: `Your system default line feed`
 
 ### padding
 

@@ -3,7 +3,6 @@ var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
 var helpers = require('./lib/helpers');
-var parsers = require('./lib/parsers');
 var PluginError = gutil.PluginError;
 var pluginName = 'gulp-todo';
 
@@ -43,24 +42,23 @@ module.exports = function (params) {
             //get extension - assume .js as default
             var ext = path.extname(file.path) || '.js';
             //check if parser for filetype exists
-            if (!parsers[ext]) {
+            if (!helpers.isExtSupported(ext)) {
                 var msg = 'File: ' + file.path + ' - Extension ' + gutil.colors.red(ext) + ' is not supported';
                 cb(new PluginError(pluginName, msg));
                 return;
             }
 
             var contents = file.contents.toString('utf8');
-            //TODO: figure out if this is the best way to call a parser
-            var fileCommentsArr = parsers[ext]().call(this, contents);
-            if (!fileCommentsArr || !fileCommentsArr.length) {
+            var filePath = file.path && file.relative || file.path;
+            var _comments = helpers.parse(ext, contents, filePath);
+            if (!_comments || !_comments.length) {
                 cb();
                 return;
             }
-            var mappedComments = helpers.getMappedComments(fileCommentsArr, file);
             if (config.verbose) {
-                helpers.logCommentsToConsole(mappedComments);
+                helpers.logCommentsToConsole(_comments);
             }
-            comments = comments.concat(mappedComments);
+            comments = comments.concat(_comments);
             cb();
         },
         function (cb) {
@@ -68,7 +66,7 @@ module.exports = function (params) {
                 cb();
                 return;
             }
-            var newContents = helpers.generateContents(comments, config);
+            var newContents = helpers.reporter(comments, config);
             var todoFile = new gutil.File({
                 cwd: firstFile.cwd,
                 base: firstFile.base,
