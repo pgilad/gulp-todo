@@ -11,7 +11,7 @@ Parse files from a stream, extract todos/fixmes from comments and output a markd
 
 Install with [npm](https://npmjs.org/package/gulp-todo)
 
-```bash
+```sh
 $ npm install --save-dev gulp-todo
 ```
 
