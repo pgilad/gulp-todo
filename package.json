@@ -26,11 +26,12 @@
     "gulp",
     "js",
     "fixme",
-    "javascript",
     "comments",
     "todo",
     "list",
-    "parse"
+    "parse",
+    "generator",
+    "ci"
   ],
   "dependencies": {
     "get-line-from-pos": "^1.0.0",

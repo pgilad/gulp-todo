@@ -32,15 +32,27 @@ gulp.task('todo', function() {
 // generate todo from your jade files
 gulp.task('todo-jade', function() {
     gulp.src('partials/**/*.jade')
-        .pipe(todo({
-                fileName: 'jade-todo.md'
-            }))
+        .pipe(todo({ fileName: 'jade-todo.md' }))
+        .pipe(gulp.dest('./'));
+        // -> Will output a jade-todo.md with your todos
+});
+
+// get filenames relative to project root (where your gulpfile is)
+gulp.task('todo-absolute', function() {
+    gulp.src('js/**/*.js', { base: './' })
+        .pipe(todo())
+        .pipe(gulp.dest('./'));
+});
+
+// get absolute path filenames
+gulp.task('todo-absolute', function() {
+    gulp.src('js/**/*.js', { base: '/' })
+        .pipe(todo())
         .pipe(gulp.dest('./'));
 });
 
 // create a json output of the comments (useful for CI such as jenkins)
 var wrap = require('gulp-wrap');
-
 gulp.task('todo-json', function () {
     gulp.src('./**/*.js', {
         base: './'

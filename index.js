@@ -7,6 +7,16 @@ var parsers = require('./lib/parsers');
 var PluginError = gutil.PluginError;
 var pluginName = 'gulp-todo';
 
+/**
+ * @param {object} params
+ * @param {string} [params.fileName='TODO.md']
+ * @param {number} [params.padding=2]
+ * @param {string} [params.newLine='\n']
+ * @param {boolean} [params.verbose=false]
+ * @param {function} [params.transformComment]
+ * @param {function} [params.transformHeader]
+ * @return {stream} Returns the transformed stream
+ */
 module.exports = function (params) {
     var firstFile;
     var comments = [];
