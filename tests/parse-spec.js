@@ -12,7 +12,7 @@ var getFixturePath = function (file) {
 var getComments = function (file) {
     var content = fs.readFileSync(file, 'utf8');
     var ext = path.extname(file);
-    return parsers[ext]()(content);
+    return parsers.parse(ext, content, file);
 };
 
 describe('gulp-todo parsing', function () {

@@ -39,11 +39,11 @@ describe('gulp-todo streaming', function () {
         stream.on('data', function (file) {
             var _filename = path.basename(file.path);
             assert.equal(_filename, 'TODO.md');
-            assert.ok(/figure out if/.test(file._contents.toString()));
-            assert.ok(/index.js/.test(file._contents.toString()));
+            assert.ok(/Do something/.test(file._contents.toString()));
+            assert.ok(/coffee.coffee/.test(file._contents.toString()));
         }).on('end', cb);
 
-        streamFile('./index.js', stream);
+        streamFile('./tests/fixtures/coffee.coffee', stream);
     });
 
     it('should output to the correct filename', function (cb) {
@@ -77,18 +77,18 @@ describe('gulp-todo streaming', function () {
         stream.on('data', function (file) {
             var _filename = path.basename(file.path);
             assert.equal(_filename, 'TODO.md');
-            assert.ok(/figure out if/.test(file._contents.toString()));
-            assert.ok(/index\.js/.test(file._contents.toString()));
+            assert.ok(/Do something/.test(file._contents.toString()));
+            assert.ok(/coffee.coffee/.test(file._contents.toString()));
         }).on('end', function () {
             //restore write
             process.stdout.write = write;
             output = output.join('\n');
             assert(/TODO/.test(output));
-            assert(/index\.js/.test(output));
+            assert(/coffee.coffee/.test(output));
             cb();
         });
 
-        streamFile('./index.js', stream);
+        streamFile('./tests/fixtures/coffee.coffee', stream);
     });
 
     it('should use custom transformation for header', function (cb) {
@@ -115,13 +115,13 @@ describe('gulp-todo streaming', function () {
 
         stream.on('data', function (file) {
             var contents = file._contents.toString();
-            assert(/\*\s*(\w+\s*)+\s*\(at index.js:[0-9]+\)/.test(contents));
+            assert(/\*\s*(\w+\s*)+\s*\(at.*coffee.coffee:[0-9]+\)/.test(contents));
         }).on('end', cb);
 
-        streamFile('./index.js', stream);
+        streamFile('./tests/fixtures/coffee.coffee', stream);
     });
 
-    it('should handle a file without a path or extension', function (cb) {
+    it('should default to .js extension with no path', function (cb) {
         var stream = todo();
 
         stream.on('data', function (file) {
@@ -129,11 +129,9 @@ describe('gulp-todo streaming', function () {
             assert.ok(/unknown file/.test(contents));
         }).on('end', cb);
 
-        var file = './index.js';
-        var testFile = fs.readFileSync(file);
-
+        var testFile = fs.readFileSync('./tests/fixtures/jsdoc.js', 'utf8');
         stream.write(new gutil.File({
-            contents: new Buffer(testFile.toString())
+            contents: new Buffer(testFile)
         }));
 
         stream.end();

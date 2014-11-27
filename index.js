@@ -3,6 +3,7 @@ var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
 var helpers = require('./lib/helpers');
+var parsers = require('./lib/parsers');
 var PluginError = gutil.PluginError;
 var pluginName = 'gulp-todo';
 
@@ -42,7 +43,7 @@ module.exports = function (params) {
             //get extension - assume .js as default
             var ext = path.extname(file.path) || '.js';
             //check if parser for filetype exists
-            if (!helpers.isExtSupported(ext)) {
+            if (!parsers.isExtSupported(ext)) {
                 var msg = 'File: ' + file.path + ' - Extension ' + gutil.colors.red(ext) + ' is not supported';
                 cb(new PluginError(pluginName, msg));
                 return;
@@ -50,7 +51,7 @@ module.exports = function (params) {
 
             var contents = file.contents.toString('utf8');
             var filePath = file.path && file.relative || file.path;
-            var _comments = helpers.parse(ext, contents, filePath);
+            var _comments = parsers.parse(ext, contents, filePath);
             if (!_comments || !_comments.length) {
                 cb();
                 return;
@@ -66,7 +67,7 @@ module.exports = function (params) {
                 cb();
                 return;
             }
-            var newContents = helpers.reporter(comments, config);
+            var newContents = parsers.reporter(comments, config);
             var todoFile = new gutil.File({
                 cwd: firstFile.cwd,
                 base: firstFile.base,
