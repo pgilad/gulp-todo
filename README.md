@@ -5,6 +5,8 @@
 [![NPM Downloads](http://img.shields.io/npm/dm/gulp-todo.svg?style=flat)](https://npmjs.org/package/gulp-todo)
 [![Build Status](http://img.shields.io/travis/pgilad/gulp-todo.svg?style=flat)](https://travis-ci.org/pgilad/gulp-todo)
 
+**Notice**: breaking changes in version 2.0.0
+
 Parse your files in a gulp-stream, extracting todos/fixmes from comments and reporting them
 in a reporter to your choosing using [leasot](https://github.com/pgilad/leasot).
 
