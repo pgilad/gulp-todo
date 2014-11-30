@@ -1,11 +1,14 @@
 # [gulp](https://github.com/wearefractal/gulp)-todo
-> Generate a TODO.md file from comments of files in stream
+> Parse and output TODOs and FIXMEs from comments in your file in a stream
 
 [![NPM Version](http://img.shields.io/npm/v/gulp-todo.svg?style=flat)](https://npmjs.org/package/gulp-todo)
 [![NPM Downloads](http://img.shields.io/npm/dm/gulp-todo.svg?style=flat)](https://npmjs.org/package/gulp-todo)
 [![Build Status](http://img.shields.io/travis/pgilad/gulp-todo.svg?style=flat)](https://travis-ci.org/pgilad/gulp-todo)
 
-Parse files from a stream, extract todos/fixmes from comments and output a markdown file.
+Parse your files in a gulp-stream, extracting todos/fixmes from comments and reporting them
+in a reporter to your choosing using [leasot](https://github.com/pgilad/leasot).
+
+Issues with the output should be reported on the [leasot issue tracker](https://github.com/pgilad/leasot/issues)
 
 ## Install
 
@@ -58,21 +61,19 @@ gulp.task('todo-json', function () {
         base: './'
     })
         .pipe(todo({
-            fileName: 'TODO.json',
-            padding: 1,
-            newLine: ',\n',
-            transformHeader: function () {
-                return '';
-            },
-            transformComment: function (file, line, text, kind) {
-                return ['{' + '"file": "' + file.replace(/"/g, '\\"') + '"',
-                    '"text": "' + text.replace(/"/g, '\\"') + '"',
-                    '"kind": "' + kind + '"',
-                    '"line": ' + line + '}'];
-            }
+            fileName: 'todo.json',
+            reporter: 'json'
         }))
-        .pipe(wrap('[\n<%= contents %>\n]'))
         .pipe(gulp.dest('./'));
+});
+
+// output once in markdown and then output a json file as well
+gulp.task('todo-reporters', function() {
+    gulp.src('js/**/*.js')
+        .pipe(todo())
+        .pipe(gulp.dest('./')) //output todo.md as markdown
+        .pipe(todo.reporter('json', {fileName: 'todo.json'}))
+        .pipe(gulp.dest('./')) //output todo.json as json
 });
 ```
 
@@ -120,53 +121,23 @@ gulp.task('default', function () {
 
 ## Supported Filetypes
 
-| Filetype     | Extension       | Notes                                           |
-| ------------ | --------------- | ------------------------------------------------|
-| Coffeescript | `.coffee`       | using regex. Supports `#` comments.             |
-| Handlebars   | `.hbs`          | using regex. Supports `{{! }}` and `{{!-- --}}` |
-| Jade         | `.jade`         | using regex.                                    |
-| Javascript   | `.js`           | using regex. Supports `// and /* */` comments   |
-| Sass         | `.sass` `.scss` | using regex. Supports `// and /* */` comments.  |
-| Stylus       | `.styl`         | using regex. Supports `// and /* */` comments.  |
-| Typescript   | `.ts`           | using regex. Supports `// and /* */` comments.  |
-
-Javascript is the default parser.
-
-**PRs for additional filetypes is welcomed!!**
+See https://github.com/pgilad/leasot#supported-languages
 
 ## API
 
-`todo(params)`
+### todo(options)
 
-`params` is an optional object, that may contain the following properties:
+`options` is an optional object, that may contain the following properties:
 
-### fileName
+#### fileName
 
 Specify the output filename.
 
 **Type**: `String`
 
-**Default**: `todo.md`
+**Default**: `TODO.md`
 
-### newLine
-
-How to separate lines in the output file. Defaults to your OS's default line separator.
-
-**Type**: `String`
-
-**Default**: `Your system default line feed`
-
-### padding
-
-How many `newLine`s should separate between comment type blocks.
-
-**Type**: `Number`
-
-**Default**: 2
-
-**Minimum**: 0
-
-### verbose
+#### verbose
 
 Output comments to console as well.
 
@@ -174,74 +145,34 @@ Output comments to console as well.
 
 **Default**: `false`
 
-### transformHeader(kind)
+#### reporter
 
-Control the output of a header for each comment kind (*i.e todo, fixme*).
+Which reporter to use.
 
-**Type**: `Function`
+All other `params` are passed along to the selected reporter (except `verbose` and `fileName`)
 
-**Default**:
-```js
-transformHeader: function (kind) {
-    return ['### ' + kind + 's',
-        '| Filename | line # | ' + kind,
-        '|:------|:------:|:------'
-    ];
-}
-```
+For options and more information about using reporters,
+see: https://github.com/pgilad/leasot#reporter and
+https://github.com/pgilad/leasot#built-in-reporters
 
-**kind**: will be be passed as the comment kind (todo/fixme).
+**Type**: `String|Function`
 
-**Returns**: `String[]|String`
+**Default**: `markdown`
 
-You are expected to return either an `Array of strings` or just a `string`. If you return an array - each item will be separated by a newline in the output.
+### todo.reporter(reporter, options)
 
-### transformComment(file, line, text, kind)
+Use another reporter in stream, will replace the contents of the output file.
+Must be used after `todo()`, since it uses the `file.todos` that are passed along.
 
-Control the output for each comment.
+See the example in the [usage](#usage)
 
-**Type**: `Function`
+#### reporter
 
-**Default**:
-```js
-transformComment: function (file, line, text, kind) {
-    return ['| ' + file + ' | ' + line + ' | ' + text];
-},
-```
+Same options as the above settings for `reporter`
 
-**file**: filename the comment was in.
+#### options
 
-**line**: line of comment.
-
-**text**: comment text
-
-**kind**: will be be passed as the comment kind (todo/fixme).
-
-**Returns**: `String[]|String`
-
-You are expected to return either an `Array of strings` or just a `string`. If you return an array - each item will be separated by a newline in the output.
-
-## Usage using all default options
-
-```js
-//...
-.pipe(todo{
-    fileName: 'TODO.md',
-    padding: 2,
-    verbose: false,
-    newLine: gutil.linefeed,
-    transformComment: function (file, line, text, kind) {
-        return ['| ' + file + ' | ' + line + ' | ' + text];
-    },
-    transformHeader: function (kind) {
-        return ['### ' + kind + 's',
-            '| Filename | line # | ' + kind,
-            '|:------|:------:|:------'
-        ];
-    }
-})
-//...
-```
+Pass along options to the reporter, and also if you pass a `fileName` - it will rename the filename in stream.
 
 ## License
 

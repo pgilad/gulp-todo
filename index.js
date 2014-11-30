@@ -2,80 +2,93 @@
 var path = require('path');
 var gutil = require('gulp-util');
 var through = require('through2');
-var helpers = require('./lib/helpers');
-var parsers = require('./lib/parsers');
+var leasot = require('leasot');
+var defaults = require('lodash.defaults');
 var PluginError = gutil.PluginError;
 var pluginName = 'gulp-todo';
 
-/**
- * @param {object} params
- * @param {string} [params.fileName='TODO.md']
- * @param {number} [params.padding=2]
- * @param {string} [params.newLine='\n']
- * @param {boolean} [params.verbose=false]
- * @param {function} [params.transformComment]
- * @param {function} [params.transformHeader]
- * @return {stream} Returns the transformed stream
- */
-module.exports = function (params) {
+function logCommentsToConsole(comments) {
+    comments.forEach(function(comment) {
+        var isTodo = /todo/i.test(comment.kind);
+        var commentType = isTodo ? gutil.colors.cyan(comment.kind) : gutil.colors.magenta(comment.kind);
+        var commentLocation = '@' + gutil.colors.gray(comment.file + ':' + comment.line);
+        gutil.log(commentType, comment.text, commentLocation);
+    });
+}
+
+module.exports = function(options) {
+    var config = defaults(options || {}, {
+        fileName: 'TODO.md',
+        verbose: false,
+        reporter: 'markdown'
+    });
+    var fileName = config.fileName;
+    var verbose = config.verbose;
+    // these are not passed along to leasot
+    delete config.fileName;
+    delete config.verbose;
     var firstFile;
     var comments = [];
-    var config = helpers.getConfig(params);
 
-    return through.obj(function (file, enc, cb) {
-            //let null files pass through
+    return through.obj(function(file, enc, cb) {
             if (file.isNull()) {
                 cb(null, file);
                 return;
             }
 
-            //don't handle streams for now
             if (file.isStream()) {
                 cb(new PluginError(pluginName, 'Streaming not supported'));
                 return;
             }
-
-            //assign first file to get relative cwd/path
-            if (!firstFile) {
-                firstFile = file;
-            }
-
+            firstFile = firstFile || file;
             //get extension - assume .js as default
             var ext = path.extname(file.path) || '.js';
             //check if parser for filetype exists
-            if (!parsers.isExtSupported(ext)) {
-                var msg = 'File: ' + file.path + ' - Extension ' + gutil.colors.red(ext) + ' is not supported';
+            //TODO: perhaps just skip unsupported files
+            if (!leasot.isExtSupported(ext)) {
+                var msg = ['File:',
+                    file.path, '- Extension',
+                    gutil.colors.red(ext),
+                    'is not supported'
+                ].join(' ');
                 cb(new PluginError(pluginName, msg));
                 return;
             }
 
-            var contents = file.contents.toString('utf8');
             var filePath = file.path && file.relative || file.path;
-            var _comments = parsers.parse(ext, contents, filePath);
-            if (!_comments || !_comments.length) {
-                cb();
-                return;
-            }
-            if (config.verbose) {
-                helpers.logCommentsToConsole(_comments);
+            var _comments = leasot.parse(ext, file.contents.toString('utf8'), filePath);
+            if (verbose) {
+                logCommentsToConsole(_comments);
             }
             comments = comments.concat(_comments);
             cb();
         },
-        function (cb) {
+        function(cb) {
             if (!firstFile) {
                 cb();
                 return;
             }
-            var newContents = parsers.reporter(comments, config);
+            // use requested reporter or default
+            var newContents;
+            try {
+                newContents = leasot.reporter(comments, config);
+            } catch (e) {
+                cb(new gutil.PluginError(pluginName, e));
+                return;
+            }
+
             var todoFile = new gutil.File({
                 cwd: firstFile.cwd,
                 base: firstFile.base,
-                path: path.join(firstFile.base, config.fileName),
+                path: path.join(firstFile.base, fileName),
                 contents: new Buffer(newContents)
             });
-
+            // also pass along comments object for future reporters
+            todoFile.todos = comments;
             this.push(todoFile);
             cb();
         });
 };
+
+var reporter = require('./lib/reporter');
+module.exports.reporter = reporter;
