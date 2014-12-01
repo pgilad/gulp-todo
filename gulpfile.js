@@ -8,7 +8,8 @@ gulp.task('json', function () {
     })
         .pipe(todo({
             fileName: 'todo.json',
-            reporter: 'json'
+            reporter: 'json',
+            absolute: true
         }))
         .pipe(gulp.dest('./'));
 });

@@ -44,8 +44,10 @@ gulp.task('todo-jade', function() {
 
 // get filenames relative to project root (where your gulpfile is)
 gulp.task('todo-absolute', function() {
-    gulp.src('js/**/*.js', { base: './' })
-        .pipe(todo())
+    gulp.src('js/**/*.js')
+        .pipe(todo({
+            absolute: true
+        }))
         .pipe(gulp.dest('./'));
 });
 
@@ -146,6 +148,10 @@ Output comments to console as well.
 **Type**: `Boolean`
 
 **Default**: `false`
+
+#### absolute
+
+Output absolute paths of files (as available via `file.path`)
 
 #### reporter
 
