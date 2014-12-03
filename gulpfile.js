@@ -2,6 +2,7 @@
 var gulp = require('gulp');
 var todo = require('./index');
 var wrap = require('gulp-wrap');
+var header = require('gulp-header');
 
 gulp.task('xml', function () {
     gulp.src('./**/*.js', {
@@ -9,17 +10,17 @@ gulp.task('xml', function () {
     })
         .pipe(todo({
             fileName: 'todo.xml',
-            reporter: 'default',
+            reporter: 'custom',
             transformComment: function (file, line, text, kind) {
-                return ['<comment file="' + file + '" line="' + line + '" pattern="' + kind + '">',
+                return ['<comment file="' + file.replace(/"/g, '\"') + '" line="' + line + '" pattern="' + kind + '">',
                     text, '</comment>'];
-                //jshint unused:false
             },
             transformHeader: function () {
                 return '';
             }
         }))
         .pipe(wrap('<comments xmlns="http://todos.sourceforge.net" version="0.1.0"> <%= contents %></comments>'))
+        .pipe(header('<?xml version="1.0"?>'))
         .pipe(gulp.dest('./'));
 });
 
