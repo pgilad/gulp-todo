@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "gulp": "^3.8.10",
+    "gulp-wrap": "^0.5.0",
     "mocha": "*",
     "should": "*"
   }
