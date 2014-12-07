@@ -20,7 +20,7 @@ gulp.task('xml', function () {
             }
         }))
         .pipe(wrap('<comments xmlns="http://todos.sourceforge.net" version="0.1.0"> <%= contents %></comments>'))
-        .pipe(header('<?xml version="1.0"?>'))
+        .pipe(header('<?xml version="1.0" encoding="UTF-8"?>'))
         .pipe(gulp.dest('./'));
 });
 
