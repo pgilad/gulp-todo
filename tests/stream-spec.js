@@ -66,10 +66,9 @@ describe('gulp-todo streaming', function () {
         var output = [];
 
         var write = process.stdout.write;
-
         process.stdout.write = (function (stub) {
             return function (string) {
-                stub.apply(process.stdout, arguments);
+                // stub.apply(process.stdout, arguments);
                 output.push(string);
             };
         })(process.stdout.write);
