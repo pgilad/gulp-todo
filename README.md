@@ -51,7 +51,7 @@ gulp.task('todo-absolute', function() {
         .pipe(gulp.dest('./'));
 });
 
-// get absolute path filenames
+// get relative path filenames
 gulp.task('todo-absolute', function() {
     gulp.src('js/**/*.js', { base: '/' })
         .pipe(todo())
@@ -59,7 +59,6 @@ gulp.task('todo-absolute', function() {
 });
 
 // create a json output of the comments (useful for CI such as jenkins)
-var wrap = require('gulp-wrap');
 gulp.task('todo-json', function () {
     gulp.src('./**/*.js', {
         base: './'
@@ -78,6 +77,19 @@ gulp.task('todo-reporters', function() {
         .pipe(gulp.dest('./')) //output todo.md as markdown
         .pipe(todo.reporter('json', {fileName: 'todo.json'}))
         .pipe(gulp.dest('./')) //output todo.json as json
+});
+
+
+// Delete the todo.md file if no todos were found
+var gulpIf = require('gulp-if');
+var del = require('del');
+var vinylPaths = require('vinyl-paths');
+gulp.task('todo-delete', function() {
+    gulp.src('js/**/*.js')
+        .pipe(todo())
+        .pipe(gulpIf(function (file) {
+            return file.todos && Boolean(file.todos.length);
+        }, vinylPaths(del), gulp.dest('./'));
 });
 ```
 
