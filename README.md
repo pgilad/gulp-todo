@@ -164,6 +164,10 @@ Output comments to console as well.
 
 Output absolute paths of files (as available via `file.path`)
 
+#### customTags
+
+Pass along custom tags (See [custom tags](https://github.com/pgilad/leasot#parseextension-contents-filename-customtags)) to leasot.
+
 #### reporter
 
 Which reporter to use.

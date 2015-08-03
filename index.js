@@ -56,7 +56,7 @@ module.exports = function (options) {
             } else {
                 filePath = file.path && file.relative || file.path;
             }
-            var _comments = leasot.parse(ext, file.contents.toString('utf8'), filePath);
+            var _comments = leasot.parse(ext, file.contents.toString('utf8'), filePath, config.customTags);
             if (options.verbose) {
                 logCommentsToConsole(_comments);
             }
