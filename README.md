@@ -166,7 +166,11 @@ Output absolute paths of files (as available via `file.path`)
 
 #### customTags
 
-Pass along custom tags (See [custom tags](https://github.com/pgilad/leasot#parseextension-contents-filename-customtags)) to leasot.
+See [customTags](https://github.com/pgilad/leasot#parseoptions).
+
+#### withInlineFiles
+
+See [withInlineFiles](https://github.com/pgilad/leasot#parseoptions).
 
 #### reporter
 

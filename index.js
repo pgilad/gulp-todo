@@ -56,7 +56,13 @@ module.exports = function (options) {
             } else {
                 filePath = file.path && file.relative || file.path;
             }
-            var _comments = leasot.parse(ext, file.contents.toString('utf8'), filePath, config.customTags);
+            var _comments = leasot.parse({
+                ext: ext,
+                content: file.contents.toString('utf8'),
+                fileName: filePath,
+                customTags: config.customTags,
+                withInlineFiles: config.withInlineFiles
+            });
             if (options.verbose) {
                 logCommentsToConsole(_comments);
             }
