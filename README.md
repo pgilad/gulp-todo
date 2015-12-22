@@ -119,8 +119,9 @@ gulp.task('default', function () {
         .pipe(through.obj(function (file, enc, cb) {
             //read and interpolate template
             var tmpl = fs.readFileSync('./readme.md.template', 'utf8');
-            var newContents = template(tmpl, {
-                marker: file.contents.toString()
+            var compiledTpl = template(tmpl);
+            var newContents = compiledTpl({
+                'marker': file.contents.toString()
             });
             //change file name
             file.path = path.join(file.base, 'readme-new.md');
