@@ -5,6 +5,7 @@ var through = require('through2');
 var leasot = require('leasot');
 var defaults = require('lodash.defaults');
 var omit = require('lodash.omit');
+
 var PluginError = gutil.PluginError;
 var pluginName = 'gulp-todo';
 
