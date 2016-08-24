@@ -120,22 +120,6 @@ describe('gulp-todo streaming', function () {
         streamFile('./tests/fixtures/coffee.coffee', stream);
     });
 
-    it('should default to .js extension with no path', function (cb) {
-        var stream = todo();
-
-        stream.on('data', function (file) {
-            var contents = file._contents.toString();
-            assert.ok(/unknown file/.test(contents));
-        }).on('end', cb);
-
-        var testFile = fs.readFileSync('./tests/fixtures/jsdoc.js', 'utf8');
-        stream.write(new gutil.File({
-            contents: new Buffer(testFile)
-        }));
-
-        stream.end();
-    });
-
     it('should throw if got an unsupported file extension', function (cb) {
         var stream = todo();
 
