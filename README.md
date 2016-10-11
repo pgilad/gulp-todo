@@ -87,7 +87,7 @@ gulp.task('todo-delete', function() {
         .pipe(todo())
         .pipe(gulpIf(function (file) {
             return file.todos && Boolean(file.todos.length);
-        }, vinylPaths(del), gulp.dest('./'));
+        }, gulp.dest('./'), vinylPaths(del));
 });
 ```
 
