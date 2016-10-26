@@ -35,7 +35,7 @@
   ],
   "dependencies": {
     "gulp-util": "^3.0.7",
-    "leasot": "^4.0.1",
+    "leasot": "^4.2.0",
     "lodash.defaults": "^4.2.0",
     "lodash.omit": "^4.5.0",
     "through2": "^2.0.0"
@@ -44,7 +44,7 @@
     "gulp": "^3.9.0",
     "gulp-header": "^1.7.1",
     "gulp-wrap": "^0.13.0",
-    "mocha": "^3.0.2",
-    "should": "^11.1.0"
+    "mocha": "^3.1.2",
+    "should": "^11.1.1"
   }
 }
