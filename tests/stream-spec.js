@@ -140,6 +140,61 @@ describe('gulp-todo streaming', function () {
         stream.end();
     });
 
+    it('should skip on unsupported files when skip is true', function (cb) {
+        var stream = todo({
+            skipUnsupported: true
+        });
+
+        var files = [];
+
+        var expected = fs.readFileSync('./tests/expected/empty.md', 'utf8').trim();
+        stream.on('data', function (file) {
+            assert.equal(file.contents.toString(), expected);
+            files.push(file);
+        }).on('end', function () {
+            assert.equal(files.length, 1, 'Make sure only 1 file was outputted');
+            cb();
+        });
+
+        var file = './index.js';
+        var testFile = fs.readFileSync(file);
+
+        stream.write(new gutil.File({
+            path: './index.unsupported',
+            contents: new Buffer(testFile.toString())
+        }));
+
+        stream.end();
+    });
+
+    it('should show a message about skipping unsupported files if verbose and skip unsupported is true', function (cb) {
+        var stream = todo({
+            skipUnsupported: true,
+            verbose: true
+        });
+
+        var files = [];
+
+        var expected = fs.readFileSync('./tests/expected/empty.md', 'utf8').trim();
+        stream.on('data', function (file) {
+            assert.equal(file.contents.toString(), expected);
+            files.push(file);
+        }).on('end', function () {
+            assert.equal(files.length, 1, 'Make sure only 1 file was outputted');
+            cb();
+        });
+
+        var file = './index.js';
+        var testFile = fs.readFileSync(file);
+
+        stream.write(new gutil.File({
+            path: './index.unsupported',
+            contents: new Buffer(testFile.toString())
+        }));
+
+        stream.end();
+    });
+
     it('should parse a jade file', function (cb) {
         var stream = todo();
 

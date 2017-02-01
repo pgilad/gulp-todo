@@ -23,6 +23,7 @@ module.exports = function (options) {
         fileName: 'TODO.md',
         verbose: false,
         absolute: false,
+        skipUnsupported: false,
         reporter: 'markdown'
     });
     var config = omit(options, ['fileName', 'verbose', 'absolute']);
@@ -43,12 +44,19 @@ module.exports = function (options) {
             //get extension - assume .js as default
             var ext = path.extname(file.path) || '.js';
             //check if parser for filetype exists
-            //TODO: perhaps just skip unsupported files
             if (!leasot.isExtSupported(ext)) {
-                var msg = ['File:', file.path, '- Extension', gutil.colors.red(ext),
-                    'is not supported'
-                ].join(' ');
-                cb(new PluginError(pluginName, msg));
+                if (!options.skipUnsupported) {
+                    var msg = ['File:', file.path, '- Extension', gutil.colors.red(ext),
+                        'is not supported'
+                    ].join(' ');
+                    cb(new PluginError(pluginName, msg));
+                    return;
+                } else if (options.verbose) {
+                    var msg = ['Skipping file', file.path, 'with extension',
+                                    gutil.colors.red(ext), 'as it is unsupported'].join(' ');
+                    gutil.log(msg);
+                }
+                cb();
                 return;
             }
             var filePath;
