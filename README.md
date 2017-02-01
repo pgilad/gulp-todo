@@ -161,6 +161,14 @@ Output comments to console as well.
 
 **Default**: `false`
 
+#### skipUnsupported
+
+Whether to skip unsupported files or not.
+
+**Type**: `Boolean`
+
+**Default**: `false`
+
 #### absolute
 
 Output absolute paths of files (as available via `file.path`)
