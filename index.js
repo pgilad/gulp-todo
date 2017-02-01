@@ -44,15 +44,14 @@ module.exports = function (options) {
             //get extension - assume .js as default
             var ext = path.extname(file.path) || '.js';
             //check if parser for filetype exists
-            if (!leasot.isExtSupported(ext) && !options.skipUnsupported) {
-                var msg = ['File:', file.path, '- Extension', gutil.colors.red(ext),
-                    'is not supported'
-                ].join(' ');
-                cb(new PluginError(pluginName, msg));
-                return;
-            }
-            if (options.skipUnsupported) {
-                if (options.verbose) {
+            if (!leasot.isExtSupported(ext)) {
+                if (!options.skipUnsupported) {
+                    var msg = ['File:', file.path, '- Extension', gutil.colors.red(ext),
+                        'is not supported'
+                    ].join(' ');
+                    cb(new PluginError(pluginName, msg));
+                    return;
+                } else if (options.verbose) {
                     var msg = ['Skipping file', file.path, 'with extension',
                                     gutil.colors.red(ext), 'as it is unsupported'].join(' ');
                     gutil.log(msg);
