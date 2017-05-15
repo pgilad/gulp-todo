@@ -34,8 +34,8 @@
     "ci"
   ],
   "dependencies": {
-    "gulp-util": "^3.0.7",
-    "leasot": "^4.3.0",
+    "gulp-util": "^3.0.8",
+    "leasot": "^4.7.0",
     "lodash.defaults": "^4.2.0",
     "lodash.omit": "^4.5.0",
     "through2": "^2.0.3"
