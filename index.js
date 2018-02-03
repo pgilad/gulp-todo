@@ -1,20 +1,22 @@
 'use strict';
 var path = require('path');
-var gutil = require('gulp-util');
 var through = require('through2');
 var leasot = require('leasot');
 var defaults = require('lodash.defaults');
 var omit = require('lodash.omit');
+var colors = require('ansi-colors');
+var fancyLog = require('fancy-log');
+var PluginError = require('plugin-error');
+var Vinyl = require('vinyl');
 
-var PluginError = gutil.PluginError;
 var pluginName = 'gulp-todo';
 
 function logCommentsToConsole(comments) {
     comments.forEach(function (comment) {
         var isTodo = /todo/i.test(comment.kind);
-        var commentType = isTodo ? gutil.colors.cyan(comment.kind) : gutil.colors.magenta(comment.kind);
-        var commentLocation = '@' + gutil.colors.gray(comment.file + ':' + comment.line);
-        gutil.log(commentType, comment.text, commentLocation);
+        var commentType = isTodo ? colors.cyan(comment.kind) : colors.magenta(comment.kind);
+        var commentLocation = '@' + colors.gray(comment.file + ':' + comment.line);
+        fancyLog(commentType, comment.text, commentLocation);
     });
 }
 
@@ -46,15 +48,15 @@ module.exports = function (options) {
             //check if parser for filetype exists
             if (!leasot.isExtSupported(ext)) {
                 if (!options.skipUnsupported) {
-                    var msg = ['File:', file.path, '- Extension', gutil.colors.red(ext),
+                    var msg = ['File:', file.path, '- Extension', colors.red(ext),
                         'is not supported'
                     ].join(' ');
                     cb(new PluginError(pluginName, msg));
                     return;
                 } else if (options.verbose) {
                     var msg = ['Skipping file', file.path, 'with extension',
-                                    gutil.colors.red(ext), 'as it is unsupported'].join(' ');
-                    gutil.log(msg);
+                                    colors.red(ext), 'as it is unsupported'].join(' ');
+                    fancyLog(msg);
                 }
                 cb();
                 return;
@@ -87,11 +89,11 @@ module.exports = function (options) {
             try {
                 newContents = leasot.reporter(comments, config);
             } catch (e) {
-                cb(new gutil.PluginError(pluginName, e));
+                cb(new PluginError(pluginName, e));
                 return;
             }
 
-            var todoFile = new gutil.File({
+            var todoFile = new Vinyl({
                 cwd: firstFile.cwd,
                 base: firstFile.base,
                 path: path.join(firstFile.base, options.fileName),
