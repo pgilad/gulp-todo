@@ -1,12 +1,13 @@
 'use strict';
-var path = require('path');
-var through = require('through2');
-var leasot = require('leasot');
-var defaults = require('lodash.defaults');
-var omit = require('lodash.omit');
+
 var colors = require('ansi-colors');
+var defaults = require('lodash.defaults');
 var fancyLog = require('fancy-log');
+var leasot = require('leasot');
+var omit = require('lodash.omit');
+var path = require('path');
 var PluginError = require('plugin-error');
+var through = require('through2');
 var Vinyl = require('vinyl');
 
 var pluginName = 'gulp-todo';
@@ -22,11 +23,11 @@ function logCommentsToConsole(comments) {
 
 module.exports = function (options) {
     options = defaults(options || {}, {
-        fileName: 'TODO.md',
-        verbose: false,
         absolute: false,
+        fileName: 'TODO.md',
+        reporter: 'markdown',
         skipUnsupported: false,
-        reporter: 'markdown'
+        verbose: false,
     });
     var config = omit(options, ['fileName', 'verbose', 'absolute']);
     var firstFile;
@@ -68,10 +69,10 @@ module.exports = function (options) {
                 filePath = file.path && file.relative || file.path;
             }
             var _comments = leasot.parse({
-                ext: ext,
                 content: file.contents.toString('utf8'),
-                fileName: filePath,
                 customTags: config.customTags,
+                ext: ext,
+                fileName: filePath,
                 withInlineFiles: config.withInlineFiles
             });
             if (options.verbose) {
