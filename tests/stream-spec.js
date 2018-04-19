@@ -3,12 +3,12 @@
 var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
-var gutil = require('gulp-util');
+var Vinyl = require('vinyl');
 var todo = require('../index');
 
 var streamFile = function (filename, stream) {
     var testFile = fs.readFileSync(filename);
-    stream.write(new gutil.File({
+    stream.write(new Vinyl({
         path: filename,
         contents: new Buffer(testFile.toString())
     }));
@@ -132,7 +132,7 @@ describe('gulp-todo streaming', function () {
         var file = './index.js';
         var testFile = fs.readFileSync(file);
 
-        stream.write(new gutil.File({
+        stream.write(new Vinyl({
             path: './index.unsupported',
             contents: new Buffer(testFile.toString())
         }));
@@ -159,7 +159,7 @@ describe('gulp-todo streaming', function () {
         var file = './index.js';
         var testFile = fs.readFileSync(file);
 
-        stream.write(new gutil.File({
+        stream.write(new Vinyl({
             path: './index.unsupported',
             contents: new Buffer(testFile.toString())
         }));
@@ -187,7 +187,7 @@ describe('gulp-todo streaming', function () {
         var file = './index.js';
         var testFile = fs.readFileSync(file);
 
-        stream.write(new gutil.File({
+        stream.write(new Vinyl({
             path: './index.unsupported',
             contents: new Buffer(testFile.toString())
         }));
