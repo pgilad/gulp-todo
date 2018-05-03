@@ -173,13 +173,21 @@ Whether to skip unsupported files or not.
 
 Output absolute paths of files (as available via `file.path`)
 
+#### associateParser
+
+See [associateParser](https://github.com/pgilad/leasot#parseoptions).
+
+#### customParsers
+
+See [customParsers](https://github.com/pgilad/leasot#parseoptions).
+
 #### customTags
 
 See [customTags](https://github.com/pgilad/leasot#parseoptions).
 
-#### withInlineFiles
+#### withIncludedFiles
 
-See [withInlineFiles](https://github.com/pgilad/leasot#parseoptions).
+See [withIncludedFiles](https://github.com/pgilad/leasot#parseoptions).
 
 #### reporter
 
