@@ -71,9 +71,11 @@ module.exports = function (options) {
             var _comments = leasot.parse({
                 content: file.contents.toString('utf8'),
                 customTags: config.customTags,
+                associateParser: config.associateParser,
+                customParsers: config.customParsers,
                 ext: ext,
                 fileName: filePath,
-                withInlineFiles: config.withInlineFiles
+                withIncludedFiles: config.withIncludedFiles
             });
             if (options.verbose) {
                 logCommentsToConsole(_comments);
