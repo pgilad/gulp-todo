@@ -1,6 +1,6 @@
 {
   "name": "gulp-todo",
-  "version": "5.5.0",
+  "version": "6.0.0",
   "description": "Generate a TODO.md file from comments of files in stream",
   "repository": "pgilad/gulp-todo",
   "license": "MIT",
