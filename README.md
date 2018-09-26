@@ -119,9 +119,9 @@ gulp.task('default', function () {
         .pipe(todo())
         .pipe(through.obj(function (file, enc, cb) {
             //read and interpolate template
-            var tmpl = fs.readFileSync('./readme.md.template', 'utf8');
-            var compiledTpl = template(tmpl);
-            var newContents = compiledTpl({
+            const tmpl = fs.readFileSync('./readme.md.template', 'utf8');
+            const compiledTpl = template(tmpl);
+            const newContents = compiledTpl({
                 'marker': file.contents.toString()
             });
             //change file name
@@ -144,67 +144,16 @@ See https://github.com/pgilad/leasot#supported-languages
 
 ### todo(options)
 
-`options` is an optional object, that may contain the following properties:
-
-#### fileName
-
-Specify the output filename.
-
-**Type**: `String`
-
-**Default**: `TODO.md`
-
-#### verbose
-
-Output comments to console as well.
-
-**Type**: `Boolean`
-
-**Default**: `false`
-
-#### skipUnsupported
-
-Whether to skip unsupported files or not.
-
-**Type**: `Boolean`
-
-**Default**: `false`
-
-#### absolute
-
-Output absolute paths of files (as available via `file.path`)
-
-#### Leasot parse options
-
-See [ParseConfig](https://pgilad.github.io/leasot/interfaces/parseconfig.html)
-
-#### reporter
-
-Which reporter to use.
-
-All other `params` are passed along to the selected reporter (except `verbose` and `fileName`)
-
-For options and more information about using reporters,
-see: https://pgilad.github.io/leasot/index.html#report and https://pgilad.github.io/leasot/enums/builtinreporters.html
-
-**Type**: `String|Function`
-
-**Default**: `markdown`
+`options` is an optional configuration object, see https://github.com/pgilad/gulp-todo/blob/master/index.js#L25-L31
 
 ### todo.reporter(reporter, options)
+
+`options` is an optional configuration object, see https://github.com/pgilad/gulp-todo/blob/master/lib/reporter.js#L9-L15
 
 Use another reporter in stream, will replace the contents of the output file.
 Must be used after `todo()`, since it uses the `file.todos` that are passed along.
 
 See the example in the [usage](#usage)
-
-#### reporter
-
-Same options as the above settings for `reporter`
-
-#### options
-
-Pass along options to the reporter, and also if you pass a `fileName` - it will rename the filename in stream.
 
 ## License
 

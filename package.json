@@ -19,6 +19,7 @@
   },
   "scripts": {
     "test": "mocha -R spec tests/*.js",
+    "prettier": "prettier --write '**/*.js'",
     "watchTest": "mocha --watch -R spec tests/*.js"
   },
   "keywords": [
@@ -38,7 +39,6 @@
     "fancy-log": "^1.3.2",
     "leasot": "^7.0.0-rc.2",
     "lodash.defaults": "^4.2.0",
-    "lodash.omit": "^4.5.0",
     "plugin-error": "^1.0.1",
     "through2": "^2.0.3",
     "vinyl": "^2.2.0"
@@ -48,6 +48,7 @@
     "gulp-header": "^2.0.5",
     "gulp-wrap": "^0.14.0",
     "mocha": "^5.2.0",
+    "prettier": "^1.14.3",
     "should": "^13.2.3"
   }
 }
