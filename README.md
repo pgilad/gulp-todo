@@ -21,8 +21,8 @@ $ npm install --save-dev gulp-todo
 ## Usage
 
 ```js
-var gulp = require('gulp');
-var todo = require('gulp-todo');
+const gulp = require('gulp');
+const todo = require('gulp-todo');
 
 // generate a todo.md from your javascript files
 gulp.task('todo', function() {
@@ -79,9 +79,10 @@ gulp.task('todo-reporters', function() {
 
 
 // Delete the todo.md file if no todos were found
-var gulpIf = require('gulp-if');
-var del = require('del');
-var vinylPaths = require('vinyl-paths');
+const gulpIf = require('gulp-if');
+const del = require('del');
+const vinylPaths = require('vinyl-paths');
+
 gulp.task('todo-delete', function() {
     gulp.src('js/**/*.js')
         .pipe(todo())
@@ -106,12 +107,12 @@ you can do the following:
 - Use the following code to inject into that markdown, creating a markdown file with the generated todo:
 
 ```js
-var fs = require('fs');
-var path = require('path');
-var gulp = require('gulp');
-var todo = require('gulp-todo');
-var template = require('lodash.template');
-var through = require('through2');
+const fs = require('fs');
+const path = require('path');
+const gulp = require('gulp');
+const todo = require('gulp-todo');
+const template = require('lodash.template');
+const through = require('through2');
 
 gulp.task('default', function () {
     gulp.src('./js/**/*.js')
@@ -173,21 +174,9 @@ Whether to skip unsupported files or not.
 
 Output absolute paths of files (as available via `file.path`)
 
-#### associateParser
+#### Leasot parse options
 
-See [associateParser](https://github.com/pgilad/leasot#parseoptions).
-
-#### customParsers
-
-See [customParsers](https://github.com/pgilad/leasot#parseoptions).
-
-#### customTags
-
-See [customTags](https://github.com/pgilad/leasot#parseoptions).
-
-#### withIncludedFiles
-
-See [withIncludedFiles](https://github.com/pgilad/leasot#parseoptions).
+See [ParseConfig](https://pgilad.github.io/leasot/interfaces/parseconfig.html)
 
 #### reporter
 
@@ -196,8 +185,7 @@ Which reporter to use.
 All other `params` are passed along to the selected reporter (except `verbose` and `fileName`)
 
 For options and more information about using reporters,
-see: https://github.com/pgilad/leasot#reporter and
-https://github.com/pgilad/leasot#built-in-reporters
+see: https://pgilad.github.io/leasot/index.html#report and https://pgilad.github.io/leasot/enums/builtinreporters.html
 
 **Type**: `String|Function`
 
