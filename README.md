@@ -10,6 +10,8 @@ in a reporter to your choosing using [leasot](https://github.com/pgilad/leasot).
 
 Issues with the output should be reported on the [leasot issue tracker](https://github.com/pgilad/leasot/issues)
 
+**Supports latest `leasot` version `7.0.0`.**
+
 ## Install
 
 Install with [npm](https://npmjs.org/package/gulp-todo)
