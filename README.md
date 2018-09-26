@@ -88,7 +88,7 @@ gulp.task('todo-delete', function() {
         .pipe(todo())
         .pipe(gulpIf(function (file) {
             return file.todos && Boolean(file.todos.length);
-        }, gulp.dest('./'), vinylPaths(del));
+        }, gulp.dest('./'), vinylPaths(del)));
 });
 ```
 
@@ -144,11 +144,11 @@ See https://github.com/pgilad/leasot#supported-languages
 
 ### todo(options)
 
-`options` is an optional configuration object, see https://github.com/pgilad/gulp-todo/blob/master/index.js#L25-L31
+`options` is an optional configuration object, see https://github.com/pgilad/gulp-todo/blob/master/index.js#L22-L32
 
 ### todo.reporter(reporter, options)
 
-`options` is an optional configuration object, see https://github.com/pgilad/gulp-todo/blob/master/lib/reporter.js#L9-L15
+`options` is an optional configuration object, see https://github.com/pgilad/gulp-todo/blob/master/lib/reporter.js#L10-L16
 
 Use another reporter in stream, will replace the contents of the output file.
 Must be used after `todo()`, since it uses the `file.todos` that are passed along.
