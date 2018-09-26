@@ -103,8 +103,10 @@ describe('gulp-todo streaming', function() {
 
     it('should use custom transformation for header', function(cb) {
         const stream = todo({
-            transformHeader: function(kind) {
-                return ['### //' + kind];
+            reportOptions: {
+                transformHeader: function(kind) {
+                    return ['### //' + kind];
+                },
             },
         });
 
@@ -120,8 +122,10 @@ describe('gulp-todo streaming', function() {
 
     it('should use custom transformation for comment', function(cb) {
         const stream = todo({
-            transformComment: function(file, line, text) {
-                return ['* ' + text + ' (at ' + file + ':' + line + ')'];
+            reportOptions: {
+                transformComment: function(file, line, text) {
+                    return ['* ' + text + ' (at ' + file + ':' + line + ')'];
+                },
             },
         });
 
