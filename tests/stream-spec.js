@@ -1,16 +1,17 @@
 /* global describe,it */
 'use strict';
-var assert = require('assert');
-var fs = require('fs');
-var path = require('path');
-var Vinyl = require('vinyl');
-var todo = require('../index');
 
-var streamFile = function (filename, stream) {
-    var testFile = fs.readFileSync(filename);
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+const Vinyl = require('vinyl');
+const todo = require('../index');
+
+const streamFile = function (filename, stream) {
+    const file = fs.readFileSync(filename);
     stream.write(new Vinyl({
         path: filename,
-        contents: new Buffer(testFile.toString())
+        contents: Buffer.from(file.toString())
     }));
 
     stream.end();
@@ -18,10 +19,10 @@ var streamFile = function (filename, stream) {
 
 describe('gulp-todo streaming', function () {
     it('should output empty file when getting file with no comments', function (cb) {
-        var stream = todo();
-        var files = [];
+        const stream = todo();
+        const files = [];
 
-        var expected = fs.readFileSync('./tests/expected/empty.md', 'utf8').trim();
+        const expected = fs.readFileSync('./tests/expected/empty.md', 'utf8').trim();
         stream.on('data', function (file) {
             assert.equal(file.contents.toString(), expected);
             files.push(file);
@@ -34,10 +35,10 @@ describe('gulp-todo streaming', function () {
     });
 
     it('should parse a file with comments correctly', function (cb) {
-        var stream = todo();
+        const stream = todo();
 
         stream.on('data', function (file) {
-            var _filename = path.basename(file.path);
+            const _filename = path.basename(file.path);
             assert.equal(_filename, 'TODO.md');
             assert.ok(/Do something/.test(file._contents.toString()));
             assert.ok(/coffee.coffee/.test(file._contents.toString()));
@@ -47,8 +48,8 @@ describe('gulp-todo streaming', function () {
     });
 
     it('should output to the correct filename', function (cb) {
-        var name = 'magic.md';
-        var stream = todo({
+        const name = 'magic.md';
+        const stream = todo({
             fileName: name
         });
 
@@ -60,30 +61,30 @@ describe('gulp-todo streaming', function () {
     });
 
     it('should work with verbose output', function (cb) {
-        var stream = todo({
+        const stream = todo({
             verbose: true
         });
-        var output = [];
+        const output = [];
 
-        var write = process.stdout.write;
+        const write = process.stdout.write;
         process.stdout.write = (function (stub) {
             return function (string) {
-                // stub.apply(process.stdout, arguments);
+                stub.apply(process.stdout, arguments);
                 output.push(string);
             };
         })(process.stdout.write);
 
         stream.on('data', function (file) {
-            var _filename = path.basename(file.path);
+            const _filename = path.basename(file.path);
             assert.equal(_filename, 'TODO.md');
             assert.ok(/Do something/.test(file._contents.toString()));
             assert.ok(/coffee.coffee/.test(file._contents.toString()));
         }).on('end', function () {
             //restore write
             process.stdout.write = write;
-            output = output.join('\n');
-            assert(/TODO/.test(output));
-            assert(/coffee.coffee/.test(output));
+            let result = output.join('\n');
+            assert(/TODO/.test(result));
+            assert(/coffee.coffee/.test(result));
             cb();
         });
 
@@ -91,14 +92,14 @@ describe('gulp-todo streaming', function () {
     });
 
     it('should use custom transformation for header', function (cb) {
-        var stream = todo({
+        const stream = todo({
             transformHeader: function (kind) {
                 return ['### //' + kind];
             }
         });
 
         stream.on('data', function (file) {
-            var contents = file._contents.toString();
+            const contents = file._contents.toString();
             assert(/### \/\/TODO/.test(contents));
         }).on('end', cb);
 
@@ -106,14 +107,14 @@ describe('gulp-todo streaming', function () {
     });
 
     it('should use custom transformation for comment', function (cb) {
-        var stream = todo({
+        const stream = todo({
             transformComment: function (file, line, text) {
                 return ['* ' + text + ' (at ' + file + ':' + line + ')'];
             },
         });
 
         stream.on('data', function (file) {
-            var contents = file._contents.toString();
+            const contents = file._contents.toString();
             assert(/\*\s*(\w+\s*)+\s*\(at.*coffee.coffee:[0-9]+\)/.test(contents));
         }).on('end', cb);
 
@@ -121,7 +122,7 @@ describe('gulp-todo streaming', function () {
     });
 
     it('should throw if got an unsupported file extension', function (cb) {
-        var stream = todo();
+        const stream = todo();
 
         stream.on('error', function (err) {
             assert(err);
@@ -129,25 +130,25 @@ describe('gulp-todo streaming', function () {
             cb();
         }).on('end', cb);
 
-        var file = './index.js';
-        var testFile = fs.readFileSync(file);
+        const file = './index.js';
+        const testFile = fs.readFileSync(file);
 
         stream.write(new Vinyl({
             path: './index.unsupported',
-            contents: new Buffer(testFile.toString())
+            contents: Buffer.from(testFile.toString())
         }));
 
         stream.end();
     });
 
     it('should skip on unsupported files when skip is true', function (cb) {
-        var stream = todo({
+        const stream = todo({
             skipUnsupported: true
         });
 
-        var files = [];
+        const files = [];
 
-        var expected = fs.readFileSync('./tests/expected/empty.md', 'utf8').trim();
+        const expected = fs.readFileSync('./tests/expected/empty.md', 'utf8').trim();
         stream.on('data', function (file) {
             assert.equal(file.contents.toString(), expected);
             files.push(file);
@@ -156,26 +157,26 @@ describe('gulp-todo streaming', function () {
             cb();
         });
 
-        var file = './index.js';
-        var testFile = fs.readFileSync(file);
+        const file = './index.js';
+        const testFile = fs.readFileSync(file);
 
         stream.write(new Vinyl({
             path: './index.unsupported',
-            contents: new Buffer(testFile.toString())
+            contents: Buffer.from(testFile.toString())
         }));
 
         stream.end();
     });
 
     it('should show a message about skipping unsupported files if verbose and skip unsupported is true', function (cb) {
-        var stream = todo({
+        const stream = todo({
             skipUnsupported: true,
             verbose: true
         });
 
-        var files = [];
+        const files = [];
 
-        var expected = fs.readFileSync('./tests/expected/empty.md', 'utf8').trim();
+        const expected = fs.readFileSync('./tests/expected/empty.md', 'utf8').trim();
         stream.on('data', function (file) {
             assert.equal(file.contents.toString(), expected);
             files.push(file);
@@ -184,24 +185,24 @@ describe('gulp-todo streaming', function () {
             cb();
         });
 
-        var file = './index.js';
-        var testFile = fs.readFileSync(file);
+        const file = './index.js';
+        const testFile = fs.readFileSync(file);
 
         stream.write(new Vinyl({
             path: './index.unsupported',
-            contents: new Buffer(testFile.toString())
+            contents: Buffer.from(testFile.toString())
         }));
 
         stream.end();
     });
 
     it('should parse a jade file', function (cb) {
-        var stream = todo();
+        const stream = todo();
 
         stream.on('data', function (file) {
-            var _filename = path.basename(file.path);
+            const _filename = path.basename(file.path);
             assert.equal(_filename, 'TODO.md');
-            var contents = file._contents.toString();
+            const contents = file._contents.toString();
             assert.ok(/this is a todo/.test(contents));
             assert.ok(!/THERE this isnt a todo/.test(contents));
             assert.ok(/also should be caught/.test(contents));

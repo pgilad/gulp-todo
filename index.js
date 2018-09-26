@@ -1,37 +1,37 @@
 'use strict';
 
-var colors = require('ansi-colors');
-var defaults = require('lodash.defaults');
-var fancyLog = require('fancy-log');
-var leasot = require('leasot');
-var omit = require('lodash.omit');
-var path = require('path');
-var PluginError = require('plugin-error');
-var through = require('through2');
-var Vinyl = require('vinyl');
+const colors = require('ansi-colors');
+const defaults = require('lodash.defaults');
+const fancyLog = require('fancy-log');
+const leasot = require('leasot');
+const omit = require('lodash.omit');
+const path = require('path');
+const PluginError = require('plugin-error');
+const through = require('through2');
+const Vinyl = require('vinyl');
 
-var pluginName = 'gulp-todo';
+const pluginName = 'gulp-todo';
 
 function logCommentsToConsole(comments) {
     comments.forEach(function (comment) {
-        var isTodo = /todo/i.test(comment.kind);
-        var commentType = isTodo ? colors.cyan(comment.kind) : colors.magenta(comment.kind);
-        var commentLocation = '@' + colors.gray(comment.file + ':' + comment.line);
+        const isTodo = /todo/i.test(comment.tag);
+        const commentType = isTodo ? colors.cyan(comment.tag) : colors.magenta(comment.tag);
+        const commentLocation = '@' + colors.gray(comment.file + ':' + comment.line);
         fancyLog(commentType, comment.text, commentLocation);
     });
 }
 
-module.exports = function (options) {
-    options = defaults(options || {}, {
+module.exports = function (options = {}) {
+    options = defaults({}, options, {
         absolute: false,
         fileName: 'TODO.md',
         reporter: 'markdown',
         skipUnsupported: false,
         verbose: false,
     });
-    var config = omit(options, ['fileName', 'verbose', 'absolute']);
-    var firstFile;
-    var comments = [];
+    const config = omit(options, ['fileName', 'verbose', 'absolute']);
+    let firstFile;
+    const comments = [];
 
     return through.obj(function collectTodos(file, enc, cb) {
             if (file.isNull()) {
@@ -44,64 +44,51 @@ module.exports = function (options) {
                 return;
             }
             firstFile = firstFile || file;
+
             //get extension - assume .js as default
-            var ext = path.extname(file.path) || '.js';
+            const ext = path.extname(file.path) || '.js';
+
             //check if parser for filetype exists
-            if (!leasot.isExtSupported(ext)) {
+            if (!leasot.isExtensionSupported(ext)) {
                 if (!options.skipUnsupported) {
-                    var msg = ['File:', file.path, '- Extension', colors.red(ext),
-                        'is not supported'
-                    ].join(' ');
-                    cb(new PluginError(pluginName, msg));
-                    return;
-                } else if (options.verbose) {
-                    var msg = ['Skipping file', file.path, 'with extension',
-                                    colors.red(ext), 'as it is unsupported'].join(' ');
+                    const msg = `File: ${file.path} with extension ${colors.red(ext)} is not supported`;
+                    return cb(new PluginError(pluginName, msg));
+                }
+                if (options.verbose) {
+                    const msg = `Skipping file ${file.path} with extension ${colors.red(ext)} as it is unsupported`;
                     fancyLog(msg);
                 }
-                cb();
-                return;
+                return cb();
             }
-            var filePath;
-            if (options.absolute) {
-                filePath = file.path;
-            } else {
-                filePath = file.path && file.relative || file.path;
-            }
-            var _comments = leasot.parse({
-                content: file.contents.toString('utf8'),
-                customTags: config.customTags,
+            const filePath = options.absolute ? file.path : file.path && file.relative || file.path;
+
+            const parsedComments = leasot.parse(file.contents.toString(), {
                 associateParser: config.associateParser,
                 customParsers: config.customParsers,
-                ext: ext,
-                fileName: filePath,
-                withIncludedFiles: config.withIncludedFiles
+                customTags: config.customTags,
+                extension: ext,
+                filename: filePath,
+                withInlineFiles: config.withIncludedFiles
             });
             if (options.verbose) {
-                logCommentsToConsole(_comments);
+                logCommentsToConsole(parsedComments);
             }
-            comments = comments.concat(_comments);
+            comments.push(...parsedComments);
             cb();
         },
         function reportTodos(cb) {
             if (!firstFile) {
-                cb();
-                return;
+                return cb();
             }
-            var newContents;
-            try {
-                newContents = leasot.reporter(comments, config);
-            } catch (e) {
-                cb(new PluginError(pluginName, e));
-                return;
-            }
+            const reporterContents = leasot.report(comments, options.reporter, options);
 
-            var todoFile = new Vinyl({
+            const todoFile = new Vinyl({
                 cwd: firstFile.cwd,
                 base: firstFile.base,
                 path: path.join(firstFile.base, options.fileName),
-                contents: new Buffer(newContents)
+                contents: Buffer.from(reporterContents)
             });
+
             // also pass along comments object for future reporters
             todoFile.todos = comments;
             this.push(todoFile);
@@ -109,5 +96,5 @@ module.exports = function (options) {
         });
 };
 
-var reporter = require('./lib/reporter');
+const reporter = require('./lib/reporter');
 module.exports.reporter = reporter;

@@ -126,7 +126,7 @@ gulp.task('default', function () {
             //change file name
             file.path = path.join(file.base, 'readme-new.md');
             //replace old contents
-            file.contents = new Buffer(newContents);
+            file.contents = Buffer.from(newContents);
             //push new file
             this.push(file);
             cb();
