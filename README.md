@@ -12,6 +12,8 @@ Issues with the output should be reported on the [leasot issue tracker](https://
 
 **Supports latest `leasot` version `7.0.0`.**
 
+**Please upgrade carefully to version `7.0.0`, there were breaking changes in the `gulp-todo` API**
+
 ## Install
 
 Install with [npm](https://npmjs.org/package/gulp-todo)
