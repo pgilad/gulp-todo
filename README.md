@@ -161,4 +161,4 @@ See the example in the [usage](#usage)
 
 ## License
 
-MIT @[Gilad Peleg](http://giladpeleg.com)
+MIT © [Gilad Peleg](https://www.giladpeleg.com)
